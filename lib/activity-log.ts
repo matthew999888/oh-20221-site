@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import type { Prisma } from "@prisma/client";
 
 /**
  * Best-effort audit trail write. Never throws — logging failures should
@@ -13,7 +14,13 @@ export async function logActivity(
 ) {
   await prisma.activityLog
     .create({
-      data: { userId, action, targetType, targetId, metadata }
+      data: {
+        userId,
+        action,
+        targetType,
+        targetId,
+        metadata: metadata as Prisma.InputJsonValue | undefined
+      }
     })
     .catch(() => {
       // best-effort only
