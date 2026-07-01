@@ -1,0 +1,290 @@
+// =====================================================================
+// AFJROTC Unit Site — Prisma Schema
+// =====================================================================
+// ASSUMPTIONS (flagged): fields for ContentBlock, Announcement,
+// ReactionOption, ReactionVote, GuideLink, RosterEntry, InventoryItem,
+// CalendarEvent, Gallery, GalleryImage, ActivityLog were not supplied,
+// so reasonable defaults are used below. Adjust freely — these models
+// are intentionally simple/extensible.
+// =====================================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ---------------------------------------------------------------------
+// Auth / Identity
+// ---------------------------------------------------------------------
+
+enum UserStatus {
+  pending
+  approved
+}
+
+enum RoleKind {
+  basic
+  department
+  ldr
+  admin
+}
+
+model User {
+  id           String     @id @default(cuid())
+  name         String
+  email        String     @unique
+  passwordHash String
+  status       UserStatus @default(pending)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  roles         UserRole[]
+  reactionVotes ReactionVote[]
+  activityLogs  ActivityLog[]
+  rosterEntry   RosterEntry?
+
+  @@index([status])
+}
+
+model Role {
+  id   String   @id @default(cuid())
+  name String
+  slug String   @unique
+  kind RoleKind
+
+  users UserRole[]
+
+  @@index([kind])
+}
+
+model UserRole {
+  id     String @id @default(cuid())
+  userId String
+  roleId String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  assignedAt DateTime @default(now())
+
+  @@unique([userId, roleId])
+  @@index([roleId])
+}
+
+// ---------------------------------------------------------------------
+// Site content
+// ---------------------------------------------------------------------
+
+// ASSUMPTION: ContentBlock = the shared "editable page" pattern used by
+// several dashboard stub pages (Announcements intro, Ops Order, Promotions,
+// Guides, Cadet Roster notes, Cadet Guide): one block per page `key`, with
+// a title + description, plus any number of ordered, independently
+// editable "boxes" (each its own title/body) rendered as stacked cards.
+model ContentBlock {
+  id          String   @id @default(cuid())
+  key         String   @unique // matches a PageKey, e.g. "ops-order"
+  title       String
+  description String? // shown under the title, above the boxes
+  updatedBy   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  boxes ContentBlockBox[]
+}
+
+// ASSUMPTION: one ordered, editable "box" within a ContentBlock — the
+// repeatable unit editors add/reorder/remove on a stub page.
+model ContentBlockBox {
+  id             String   @id @default(cuid())
+  contentBlockId String
+  title          String
+  body           String // markdown or HTML
+  order          Int      @default(0)
+  updatedBy      String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  contentBlock ContentBlock @relation(fields: [contentBlockId], references: [id], onDelete: Cascade)
+
+  @@index([contentBlockId, order])
+}
+
+// ASSUMPTION: Announcement = dated post shown on a news/announcements feed.
+// `ldrSlug` is null for site-wide announcements (managed in admin/website)
+// and set to a Role's slug for announcements that belong to a single LDR
+// team page (managed on ldr/[slug]). `eventAt` is the optional date/time
+// shown on an LDR announcement card (e.g. an upcoming meet); site-wide
+// announcements instead use publishAt/expiresAt for scheduling.
+model Announcement {
+  id        String    @id @default(cuid())
+  ldrSlug   String?
+  title     String
+  body      String
+  pinned    Boolean   @default(false)
+  eventAt   DateTime?
+  publishAt DateTime  @default(now())
+  expiresAt DateTime?
+  authorId  String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([publishAt])
+  @@index([ldrSlug])
+}
+
+// ASSUMPTION: simple emoji/text reaction system attachable to an
+// Announcement (extend `targetType`/`targetId` on ReactionVote to react to
+// other models in the future). Reaction *options* (the custom-labeled
+// buttons themselves) are scoped per-LDR, since each team's lead picks
+// their own button set.
+model ReactionOption {
+  id      String @id @default(cuid())
+  ldrSlug String
+  emoji   String
+  label   String
+  order   Int    @default(0)
+
+  votes ReactionVote[]
+
+  @@index([ldrSlug, order])
+}
+
+model ReactionVote {
+  id               String   @id @default(cuid())
+  reactionOptionId String
+  userId           String
+  targetType       String // e.g. "Announcement"
+  targetId         String
+  createdAt        DateTime @default(now())
+
+  reactionOption ReactionOption @relation(fields: [reactionOptionId], references: [id], onDelete: Cascade)
+  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, targetType, targetId, reactionOptionId])
+  @@index([targetType, targetId])
+}
+
+// ASSUMPTION: GuideLink = curated external/internal resource links. Most
+// are grouped by `category` on the unit-wide "Guides & Resources" page;
+// `ldrSlug` scopes a link to a single LDR team's page instead (null for
+// the unit-wide ones).
+model GuideLink {
+  id          String   @id @default(cuid())
+  ldrSlug     String?
+  title       String
+  url         String
+  description String?
+  category    String?
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([category])
+  @@index([ldrSlug])
+}
+
+// ASSUMPTION: RosterEntry = cadet roster record, optionally linked to a
+// logged-in User account (cadets without accounts can still be rostered).
+model RosterEntry {
+  id          String   @id @default(cuid())
+  userId      String?  @unique
+  firstName   String
+  lastName    String
+  grade       Int? // 9-12
+  flight      String?
+  rank        String?
+  positionTitle String?
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([active])
+}
+
+// ASSUMPTION: InventoryItem = unit supply/uniform/equipment tracking.
+// `status` + `statusChangedAt` track the checked-in/checked-out toggle
+// (Logistics/Supply's day-to-day workflow); `assignedTo` records who an
+// item is currently checked out to (free text — a cadet name, flight, or
+// RosterEntry id).
+model InventoryItem {
+  id              String    @id @default(cuid())
+  name            String
+  category        String?
+  sku             String?
+  quantity        Int       @default(0)
+  condition       String? // e.g. new/good/worn/unserviceable
+  status          String    @default("checked_in") // "checked_in" | "checked_out"
+  statusChangedAt DateTime? // when status last toggled
+  location        String?
+  assignedTo      String? // free-text or RosterEntry id — who it's checked out to
+  notes           String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([category])
+  @@index([status])
+}
+
+// ASSUMPTION: CalendarEvent = unit calendar (drill, PT, parades, etc.).
+model CalendarEvent {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  location    String?
+  startsAt    DateTime
+  endsAt      DateTime?
+  allDay      Boolean  @default(false)
+  category    String? // e.g. drill, PT, ceremony, competition
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([startsAt])
+}
+
+// ASSUMPTION: Gallery / GalleryImage = photo albums (e.g. per event).
+model Gallery {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  coverImage  String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  images GalleryImage[]
+}
+
+model GalleryImage {
+  id        String   @id @default(cuid())
+  galleryId String
+  url       String
+  caption   String?
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+
+  gallery Gallery @relation(fields: [galleryId], references: [id], onDelete: Cascade)
+
+  @@index([galleryId])
+}
+
+// ASSUMPTION: ActivityLog = audit trail of notable user/admin actions.
+model ActivityLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  action    String // e.g. "user.approved", "announcement.created"
+  targetType String?
+  targetId  String?
+  metadata  Json?
+  createdAt DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([action])
+}
