@@ -11,11 +11,10 @@ function SiteHeader() {
         </span>
       </Link>
       <nav className="site-header__nav" aria-label="Main">
+        <Link href="/">Home</Link>
         <Link href="/announcements">Announcements</Link>
         <Link href="/calendar">Calendar</Link>
         <Link href="/gallery">Gallery</Link>
-        <Link href="/dept">Departments</Link>
-        <Link href="/ldr">Teams</Link>
         <Link href="/roster">Roster</Link>
         <Link href="/login" className="site-header__cta">
           Member Login

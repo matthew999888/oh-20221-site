@@ -4,7 +4,10 @@ import Providers from "./providers";
 
 export const metadata: Metadata = {
   title: "OH-20221 AFJROTC | Logan High School",
-  description: "OH-20221 Air Force Junior ROTC at Logan High School."
+  description: "OH-20221 Air Force Junior ROTC at Logan High School.",
+  icons: {
+    icon: "/favicon.ico"
+  }
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
