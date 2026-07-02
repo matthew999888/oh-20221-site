@@ -4,7 +4,10 @@ function SiteHeader() {
   return (
     <header className="site-header">
       <Link href="/" className="site-header__brand">
-        <span className="badge-ring badge-ring--sm" aria-hidden="true" />
+        <span className="badge-ring badge-ring--sm" aria-hidden="true">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/badge.png" alt="" className="site-header__brand-badge" />
+        </span>
         <span className="site-header__brand-text">
           <span className="site-header__brand-id">OH-20221 AFJROTC</span>
           <span className="site-header__brand-school">Logan High School</span>
@@ -26,9 +29,56 @@ function SiteHeader() {
 
 function SiteFooter() {
   return (
-    <footer className="site-footer">
-      <p>OH-20221 Air Force Junior ROTC &middot; Logan High School &middot; Logan, Ohio</p>
-      <p className="site-footer__sub">&copy; {new Date().getFullYear()} OH-20221 AFJROTC. All rights reserved.</p>
+    <footer className="hh-footer">
+      <div className="hh-footer-inner">
+        <div className="hh-footer-brand">
+          <div className="site-header__brand" style={{ pointerEvents: "none" }}>
+            <span className="badge-ring badge-ring--sm" aria-hidden="true">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/badge.png" alt="" className="site-header__brand-badge" />
+            </span>
+            <span className="site-header__brand-text">
+              <span className="site-header__brand-id">OH-20221 AFJROTC</span>
+              <span className="site-header__brand-school">Logan High School</span>
+            </span>
+          </div>
+          <p className="hh-footer-tagline">Air Force Junior ROTC &middot; United States Air Force</p>
+        </div>
+
+        <div className="hh-footer-col">
+          <div className="hh-footer-heading">Navigation</div>
+          <Link href="/">Home</Link>
+          <Link href="/announcements">Announcements</Link>
+          <Link href="/calendar">Calendar</Link>
+          <Link href="/gallery">Gallery</Link>
+          <Link href="/roster">Roster</Link>
+        </div>
+
+        <div className="hh-footer-col">
+          <div className="hh-footer-heading">Unit Info</div>
+          <Link href="/login">Cadet Login</Link>
+        </div>
+
+        <div className="hh-footer-col">
+          <div className="hh-footer-heading">Contact</div>
+          <p className="hh-footer-text">
+            Logan High School
+            <br />
+            100 Chief Circle
+            <br />
+            Logan, OH 43138
+            <br />
+            Room 110 &middot; AFJROTC
+          </p>
+          <a href="mailto:oh20221@loganlocalschools.org" className="hh-footer-text">
+            oh20221@loganlocalschools.org
+          </a>
+        </div>
+      </div>
+
+      <div className="hh-footer-bottom">
+        <p>&copy; {new Date().getFullYear()} OH-20221 AFJROTC &middot; Logan High School. All rights reserved.</p>
+      </div>
     </footer>
   );
 }

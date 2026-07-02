@@ -68,7 +68,8 @@ export default async function HomePage() {
 
           <div className="hh-hero-badge-wrap" aria-hidden="true">
             <div className="hh-hero-badge-ring">
-              <i className="fa-solid fa-shield-halved" />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/badge.png" alt="" className="hh-hero-badge-img" />
             </div>
           </div>
         </div>
@@ -168,6 +169,126 @@ export default async function HomePage() {
               From drill formations to uniform inspections, our program instills the personal discipline and
               attention to detail that follows cadets into college, careers, and every aspect of adult life.
             </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="hh-cmd-section" aria-labelledby="cmd-heading">
+        <div className="hh-cmd-inner">
+          <div className="hh-cmd-head">
+            <div className="hh-pillars-eyebrow">SY 2025–2026</div>
+            <h2 className="hh-pillars-title" id="cmd-heading">
+              Chain of<br />
+              <em>Command</em>
+            </h2>
+            <p className="hh-pillars-sub">
+              The organizational structure of OH-20221. All cadet positions are appointed annually based on
+              merit, performance, and leadership potential.
+            </p>
+          </div>
+
+          <div className="hh-cmd-tree">
+            <div className="hh-cmd-row">
+              <div className="hh-cmd-card hh-cmd-card--top">
+                <div className="hh-cmd-rank">SASI &middot; Faculty</div>
+                <div className="hh-cmd-name">Maj Lance Roberts</div>
+                <div className="hh-cmd-title">Senior Aerospace Science Instructor</div>
+              </div>
+              <div className="hh-cmd-card hh-cmd-card--top">
+                <div className="hh-cmd-rank">ASI &middot; Faculty</div>
+                <div className="hh-cmd-name">MSgt Jeffery George</div>
+                <div className="hh-cmd-title">Aerospace Science Instructor</div>
+              </div>
+            </div>
+            <div className="hh-cmd-row">
+              <div className="hh-cmd-card">
+                <div className="hh-cmd-rank">Corps HQ</div>
+                <div className="hh-cmd-name">C/Col Kevin Easton</div>
+                <div className="hh-cmd-title">Corps Commander</div>
+              </div>
+            </div>
+            <div className="hh-cmd-row">
+              <div className="hh-cmd-card">
+                <div className="hh-cmd-rank">C/Lt Col</div>
+                <div className="hh-cmd-name">Liam Triest</div>
+                <div className="hh-cmd-title">Vice Corps Commander</div>
+              </div>
+              <div className="hh-cmd-card">
+                <div className="hh-cmd-rank">C/Major</div>
+                <div className="hh-cmd-name">Tifani Stevens</div>
+                <div className="hh-cmd-title">Executive Officer</div>
+              </div>
+              <div className="hh-cmd-card">
+                <div className="hh-cmd-rank">Command Staff</div>
+                <div className="hh-cmd-name">Cook &amp; Messer</div>
+                <div className="hh-cmd-title">Superintendent &middot; 1st Sgt</div>
+              </div>
+              <div className="hh-cmd-card">
+                <div className="hh-cmd-rank">IG &amp; Stan Eval</div>
+                <div className="hh-cmd-name">Sowers &amp; Lehman</div>
+                <div className="hh-cmd-title">C/Major &middot; C/Captain</div>
+              </div>
+            </div>
+            <div className="hh-cmd-row">
+              <div className="hh-cmd-card">
+                <div className="hh-cmd-rank">C/Major</div>
+                <div className="hh-cmd-name">Clayton Rice</div>
+                <div className="hh-cmd-title">Director of Operations</div>
+              </div>
+              <div className="hh-cmd-card">
+                <div className="hh-cmd-rank">C/Major</div>
+                <div className="hh-cmd-name">Nathaniel Frost</div>
+                <div className="hh-cmd-title">Director of Mission Support</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="hh-instructors-section" aria-labelledby="instructors-heading">
+        <div className="hh-instructors-inner">
+          <div className="hh-instructors-head">
+            <div className="hh-pillars-eyebrow">Unit Leadership</div>
+            <h2 className="hh-pillars-title" id="instructors-heading">
+              Meet Our<br />
+              <em>Instructors</em>
+            </h2>
+          </div>
+
+          <div className="hh-instructors-grid">
+            <div className="hh-instructor-card">
+              <div className="hh-instructor-top">
+                <div className="hh-instructor-avatar" aria-hidden="true">
+                  LR
+                </div>
+                <div>
+                  <div className="hh-instructor-name">Major Lance Roberts</div>
+                  <div className="hh-instructor-role">SASI — OH-20221 AFJROTC</div>
+                </div>
+              </div>
+              <p className="hh-instructor-bio">
+                Major Roberts brings years of active-duty Air Force service and leadership experience to Logan
+                High School&rsquo;s AFJROTC program. His mission is to develop disciplined, service-oriented
+                leaders who carry the values of integrity, service, and excellence beyond graduation and into
+                every facet of their lives.
+              </p>
+            </div>
+            <div className="hh-instructor-card">
+              <div className="hh-instructor-top">
+                <div className="hh-instructor-avatar" aria-hidden="true">
+                  JG
+                </div>
+                <div>
+                  <div className="hh-instructor-name">MSgt Jeffery George</div>
+                  <div className="hh-instructor-role">ASI — OH-20221 AFJROTC</div>
+                </div>
+              </div>
+              <p className="hh-instructor-bio">
+                MSgt George&rsquo;s decorated Air Force career shaped his approach to mentoring: every cadet
+                gets real attention, real feedback, and real opportunities to grow. He oversees physical
+                training, drill operations, and the day-to-day readiness of the corps.
+              </p>
+            </div>
           </div>
         </div>
       </section>
