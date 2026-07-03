@@ -55,7 +55,10 @@ function LoginPageInner() {
 
       <main className="page-wrap">
         <div className="badge-lockup">
-          <div className="badge-ring" aria-hidden="true" />
+          <div className="badge-ring" aria-hidden="true">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/badge.png" alt="" className="badge-ring--img" />
+          </div>
           <div className="unit-id">
             <div className="unit-designation">OH-20221 AFJROTC</div>
             <div className="unit-school">Logan High School &nbsp;·&nbsp; Logan, Ohio</div>
