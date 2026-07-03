@@ -64,14 +64,15 @@ function SiteFooter() {
           <p className="hh-footer-text">
             Logan High School
             <br />
-            100 Chief Circle
+            14470 State Route 328
             <br />
             Logan, OH 43138
-            <br />
-            Room 110 &middot; AFJROTC
           </p>
-          <a href="mailto:oh20221@loganlocalschools.org" className="hh-footer-text">
-            oh20221@loganlocalschools.org
+          <a href="mailto:lroberts@lhsd.k12.oh.us" className="hh-footer-text">
+            Lance Roberts &lt;lroberts@lhsd.k12.oh.us&gt;
+          </a>
+          <a href="mailto:jgeorge@lhsd.k12.oh.us" className="hh-footer-text">
+            Jeff George &lt;jgeorge@lhsd.k12.oh.us&gt;
           </a>
         </div>
       </div>
