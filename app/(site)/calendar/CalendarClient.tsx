@@ -58,6 +58,7 @@ export default function CalendarClient({
   const next = month === 11 ? { y: year + 1, m: 1 } : { y: year, m: month + 2 };
 
   const selectedEvents = selectedDay ? eventsByDay.get(selectedDay) ?? [] : [];
+  const selectedHasNoEvents = selectedDay !== null && selectedEvents.length === 0;
 
   return (
     <div className="calendar">
@@ -93,43 +94,48 @@ export default function CalendarClient({
               className={`calendar__cell${isToday ? " is-today" : ""}${isSelected ? " is-selected" : ""}${
                 dayEvents.length ? " has-events" : ""
               }`}
-              onClick={() => setSelectedDay(dayEvents.length ? day : null)}
-              disabled={dayEvents.length === 0}
+              onClick={() => setSelectedDay(day)}
             >
               <span className="calendar__cell-num">{day}</span>
-              {dayEvents.length > 0 && <span className="calendar__cell-dot" aria-hidden="true" />}
+              <span className="calendar__cell-status">{dayEvents.length ? "Event" : "No Event"}</span>
             </button>
           );
         })}
       </div>
 
-      {selectedDay && selectedEvents.length > 0 && (
+      {selectedDay && (
         <div className="calendar__detail">
           <h3>
             {MONTH_NAMES[month]} {selectedDay}, {year}
           </h3>
-          <ul className="calendar__detail-list">
-            {selectedEvents.map((e) => (
-              <li key={e.id}>
-                <div className="calendar__detail-time">
-                  {e.allDay
-                    ? "All day"
-                    : new Date(e.startsAt).toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })}
-                </div>
-                <div>
-                  <p className="calendar__detail-title">
-                    {e.category && <span className="info-card__pin info-card__pin--event">{e.category}</span>} {e.title}
-                  </p>
-                  {e.location && (
-                    <p className="info-card__meta">
-                      <i className="fa-solid fa-location-dot" /> {e.location}
+          {selectedHasNoEvents ? (
+            <p className="calendar__detail-empty">
+              <i className="fa-solid fa-circle-info" aria-hidden="true" /> No events scheduled for this day.
+            </p>
+          ) : (
+            <ul className="calendar__detail-list">
+              {selectedEvents.map((e) => (
+                <li key={e.id}>
+                  <div className="calendar__detail-time">
+                    {e.allDay
+                      ? "All day"
+                      : new Date(e.startsAt).toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })}
+                  </div>
+                  <div>
+                    <p className="calendar__detail-title">
+                      {e.category && <span className="info-card__pin info-card__pin--event">{e.category}</span>} {e.title}
                     </p>
-                  )}
-                  {e.description && <p className="calendar__detail-desc">{e.description}</p>}
-                </div>
-              </li>
-            ))}
-          </ul>
+                    {e.location && (
+                      <p className="info-card__meta">
+                        <i className="fa-solid fa-location-dot" /> {e.location}
+                      </p>
+                    )}
+                    {e.description && <p className="calendar__detail-desc">{e.description}</p>}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       )}
     </div>

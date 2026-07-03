@@ -31,8 +31,8 @@ export default async function DepartmentPage({ params }: { params: { slug: strin
 
   return (
     <main className="page-section">
-      <Link href="/" className="back-link">
-        <i className="fa-solid fa-arrow-left" /> Back home
+      <Link href="/dashboard" className="back-link">
+        <i className="fa-solid fa-arrow-left" /> Back to dashboard
       </Link>
 
       {editable && (

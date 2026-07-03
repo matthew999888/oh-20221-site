@@ -946,19 +946,23 @@ a {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.2rem;
-  cursor: default;
+  gap: 0.15rem;
+  cursor: pointer;
   font-family: var(--font-ui);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease, transform 0.15s ease;
 }
 .calendar__cell--empty {
   background: transparent;
+  cursor: default;
+}
+.calendar__cell:not(.calendar__cell--empty):hover {
+  border-color: var(--purple-400);
+  background: var(--bg-card-hover);
+  box-shadow: 0 0 14px 2px var(--purple-glow);
+  transform: translateY(-1px);
 }
 .calendar__cell.has-events {
-  cursor: pointer;
   border-color: rgba(139, 92, 200, 0.3);
-}
-.calendar__cell.has-events:hover {
-  background: var(--bg-card-hover);
 }
 .calendar__cell.is-today .calendar__cell-num {
   color: var(--purple-300);
@@ -967,12 +971,23 @@ a {
 .calendar__cell.is-selected {
   border-color: var(--purple-400);
   background: var(--bg-card-hover);
+  box-shadow: 0 0 14px 2px var(--purple-glow);
 }
 .calendar__cell-dot {
   width: 5px;
   height: 5px;
   border-radius: 50%;
   background: var(--purple-400);
+}
+.calendar__cell-status {
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-400);
+}
+.calendar__cell.has-events .calendar__cell-status {
+  color: var(--purple-300);
 }
 .calendar__detail {
   margin-top: 1.5rem;
@@ -1004,6 +1019,10 @@ a {
 .calendar__detail-title {
   font-weight: 600;
   color: var(--text-100);
+}
+.calendar__detail-empty {
+  color: var(--text-300);
+  font-size: 0.92rem;
 }
 .calendar__detail-desc {
   margin-top: 0.25rem;
