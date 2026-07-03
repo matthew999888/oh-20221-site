@@ -103,7 +103,7 @@ export default async function HomePage() {
         <div className="hh-stats-grid">
           <div className="hh-stat-block">
             <div className="hh-stat-n">
-              20<span>+</span>
+              5<span>+</span>
             </div>
             <div className="hh-stat-label">Years Active</div>
           </div>
@@ -114,14 +114,14 @@ export default async function HomePage() {
             <div className="hh-stat-label">Cadets Enrolled</div>
           </div>
           <div className="hh-stat-block">
-            <div className="hh-stat-n">6</div>
-            <div className="hh-stat-label">Special Teams</div>
+            <div className="hh-stat-n">13</div>
+            <div className="hh-stat-label">LDRs</div>
           </div>
           <div className="hh-stat-block">
             <div className="hh-stat-n">
-              40<span>+</span>
+              <i className="fa-solid fa-award" aria-hidden="true" />
             </div>
-            <div className="hh-stat-label">Leadership Positions</div>
+            <div className="hh-stat-label">Distinguished Unit w/ Merit</div>
           </div>
         </div>
       </div>
@@ -135,7 +135,7 @@ export default async function HomePage() {
           </h2>
           <p className="hh-pillars-sub">
             AFJROTC develops citizens of character dedicated to serving their nation and community. OH-20221
-            has been shaping leaders at Logan High School for over two decades.
+            has been shaping leaders at Logan High School since day one.
           </p>
         </div>
 
