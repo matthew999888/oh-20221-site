@@ -31,6 +31,7 @@ export const NAV_SECTIONS: NavSection[] = [
       { href: "/dashboard/announcements", label: "Announcements", icon: "fa-solid fa-bullhorn", page: "announcements" },
       { href: "/dashboard/ops-order", label: "Ops Order", icon: "fa-solid fa-clipboard-list", page: "ops-order" },
       { href: "/dashboard/promotions", label: "Promotions", icon: "fa-solid fa-ranking-star", page: "promotions" },
+      { href: "/dashboard/promotion-scores", label: "Promotion Scores", icon: "fa-solid fa-chart-column", page: "promotion-scores" },
       { href: "/dashboard/guides", label: "Guides", icon: "fa-solid fa-book-open", page: "guide-links" },
       { href: "/dashboard/cadet-guide", label: "Cadet Guide", icon: "fa-solid fa-graduation-cap", page: "cadet-guide" },
       { href: "/gallery", label: "Gallery", icon: "fa-solid fa-images", page: "gallery" },

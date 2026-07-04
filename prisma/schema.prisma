@@ -43,10 +43,11 @@ model User {
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
 
-  roles         UserRole[]
-  reactionVotes ReactionVote[]
-  activityLogs  ActivityLog[]
-  rosterEntry   RosterEntry?
+  roles          UserRole[]
+  reactionVotes  ReactionVote[]
+  activityLogs   ActivityLog[]
+  rosterEntry    RosterEntry?
+  promotionTestAttempts PromotionTestAttempt[]
 
   @@index([status])
 }
@@ -287,4 +288,35 @@ model ActivityLog {
 
   @@index([userId])
   @@index([action])
+}
+
+// ---------------------------------------------------------------------
+// Promotion test
+// ---------------------------------------------------------------------
+
+model PromotionTestQuestion {
+  id            String   @id @default(cuid())
+  order         Int
+  questionText  String
+  choiceA       String
+  choiceB       String
+  choiceC       String
+  choiceD       String
+  correctChoice String // "A" | "B" | "C" | "D"
+  createdAt     DateTime @default(now())
+
+  @@index([order])
+}
+
+model PromotionTestAttempt {
+  id             String   @id @default(cuid())
+  userId         String
+  score          Int
+  totalQuestions Int
+  submittedAt    DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([submittedAt])
 }

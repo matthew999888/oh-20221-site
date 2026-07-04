@@ -47,6 +47,7 @@ export type PageKey =
   | "reactions"
   | "ops-order"
   | "promotions"
+  | "promotion-scores"
   | "cadet-guide"
   | "ig-inspection"
   | "superintendent-341"
@@ -84,6 +85,7 @@ const ALL_PAGE_KEYS: PageKey[] = [
   "reactions",
   "ops-order",
   "promotions",
+  "promotion-scores",
   "cadet-guide",
   "ig-inspection",
   "superintendent-341",
@@ -113,11 +115,11 @@ type PagePermissionMap = Partial<Record<PageKey, PermissionLevel>>;
 // Slugs below must match prisma/seed.ts's slugify() output for the role
 // names (e.g. "Logistics Officer" -> "logistics-officer").
 const DEPARTMENT_PERMISSIONS: Record<string, PagePermissionMap> = {
-  "corps-commander": { announcements: "edit", roster: "edit", calendar: "edit", "ops-order": "edit" },
-  "vice-corps-commander": { announcements: "edit", roster: "edit", calendar: "edit", "ops-order": "edit" },
-  "executive-officer": { announcements: "edit", roster: "view", calendar: "edit", "ops-order": "edit" },
-  superintendent: { roster: "view", inventory: "view", "superintendent-341": "edit" },
-  "1st-sergeant": { roster: "view", personnel: "edit", promotions: "edit" },
+  "corps-commander": { announcements: "edit", roster: "edit", calendar: "edit", "ops-order": "edit", "promotion-scores": "view" },
+  "vice-corps-commander": { announcements: "edit", roster: "edit", calendar: "edit", "ops-order": "edit", "promotion-scores": "view" },
+  "executive-officer": { announcements: "edit", roster: "view", calendar: "edit", "ops-order": "edit", "promotion-scores": "view" },
+  superintendent: { roster: "view", inventory: "view", "superintendent-341": "edit", "promotion-scores": "view" },
+  "1st-sergeant": { roster: "view", personnel: "edit", promotions: "edit", "promotion-scores": "view" },
   "inspector-general": { "activity-log": "view", roster: "view", "ig-inspection": "edit" },
   "stan-eval-officer": { "activity-log": "view", "ig-inspection": "edit" },
   "director-of-operations": { calendar: "edit", "guide-links": "edit", "ops-order": "edit" },
