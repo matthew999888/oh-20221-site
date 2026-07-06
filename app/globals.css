@@ -825,6 +825,18 @@ a {
   object-fit: cover;
   background: var(--bg-card);
 }
+.gallery-teaser__placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-400);
+  font-size: 1.8rem;
+}
+.gallery-teaser__placeholder::before {
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  content: "\f030"; /* fa-camera */
+}
 .gallery-teaser__title {
   position: absolute;
   inset: auto 0 0 0;
@@ -944,6 +956,18 @@ a {
   font-size: 1.5rem;
   cursor: pointer;
 }
+.lightbox-overlay__counter {
+  position: absolute;
+  top: 1.5rem;
+  left: 1.5rem;
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text-300);
+  background: rgba(255, 255, 255, 0.06);
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+}
 .lightbox-overlay__nav {
   background: none;
   border: none;
@@ -951,6 +975,32 @@ a {
   font-size: 1.75rem;
   cursor: pointer;
   padding: 1rem;
+}
+.lightbox-overlay__download {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.85rem;
+  color: var(--purple-300);
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+.lightbox-overlay__download:hover {
+  color: var(--text-100);
+}
+@media (max-width: 640px) {
+  .lightbox-overlay {
+    padding: 1rem;
+  }
+  .lightbox-overlay__nav {
+    padding: 0.5rem;
+    font-size: 1.4rem;
+  }
+  .lightbox-overlay__counter,
+  .lightbox-overlay__close {
+    top: 0.85rem;
+  }
 }
 
 /* ── Calendar ─────────────────────────────────────────────────────── */
