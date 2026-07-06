@@ -296,6 +296,7 @@ model ActivityLog {
 
 model PromotionTestQuestion {
   id            String   @id @default(cuid())
+  rank          Int      @default(1)
   order         Int
   questionText  String
   choiceA       String
@@ -305,18 +306,19 @@ model PromotionTestQuestion {
   correctChoice String // "A" | "B" | "C" | "D"
   createdAt     DateTime @default(now())
 
-  @@index([order])
+  @@index([rank, order])
 }
 
 model PromotionTestAttempt {
   id             String   @id @default(cuid())
   userId         String
+  rank           Int      @default(1)
   score          Int
   totalQuestions Int
   submittedAt    DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([userId])
+  @@index([userId, rank])
   @@index([submittedAt])
 }
