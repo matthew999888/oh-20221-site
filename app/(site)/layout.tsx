@@ -13,6 +13,12 @@ function SiteHeader() {
           <span className="site-header__brand-school">Logan High School</span>
         </span>
       </Link>
+      <input type="checkbox" id="site-nav-toggle" className="site-header__nav-toggle-input" />
+      <label htmlFor="site-nav-toggle" className="site-header__nav-toggle" aria-label="Toggle menu">
+        <span />
+        <span />
+        <span />
+      </label>
       <nav className="site-header__nav" aria-label="Main">
         <Link href="/">Home</Link>
         <Link href="/announcements">Announcements</Link>

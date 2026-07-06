@@ -516,6 +516,26 @@ a {
   z-index: 20;
   flex-wrap: wrap;
 }
+.site-header__nav-toggle-input {
+  display: none;
+}
+.site-header__nav-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.site-header__nav-toggle span {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: var(--text-100);
+  border-radius: 2px;
+}
 .site-header__brand {
   display: flex;
   align-items: center;
@@ -556,6 +576,36 @@ a {
   color: #fff !important;
 }
 
+@media (max-width: 768px) {
+  .site-header {
+    padding: 0.85rem 1.25rem;
+  }
+  .site-header__nav-toggle {
+    display: flex;
+  }
+  .site-header__nav {
+    display: none;
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    order: 3;
+    margin-top: 0.85rem;
+    padding-top: 0.85rem;
+    border-top: 1px solid rgba(139, 92, 200, 0.15);
+  }
+  .site-header__nav a {
+    width: 100%;
+    padding: 0.65rem 0;
+  }
+  .site-header__nav-toggle-input:checked ~ .site-header__nav {
+    display: flex;
+  }
+  .site-header__cta {
+    margin-top: 0.5rem;
+    text-align: center;
+  }
+}
 .site-footer {
   position: relative;
   z-index: 1;
@@ -2085,4 +2135,55 @@ a {
 }
 @media (max-width: 480px) {
   .hh-footer-inner { grid-template-columns: 1fr; }
+}
+/* ══ PUBLIC SITE MOBILE POLISH ══════════════════════════════════════ */
+@media (max-width: 480px) {
+  .home-section,
+  .page-section {
+    padding: 1.75rem 1.1rem;
+  }
+  .page-section__title {
+    font-size: 1.55rem;
+  }
+  .announcement-card {
+    padding: 1.15rem 1.25rem;
+  }
+  .info-card {
+    padding: 1rem 1.1rem;
+  }
+  .calendar {
+    padding: 0.85rem;
+    border-radius: 12px;
+  }
+  .calendar__month-label {
+    font-size: 1.05rem;
+  }
+  .calendar__grid {
+    gap: 0.25rem;
+  }
+  .calendar__cell-num {
+    font-size: 0.82rem;
+  }
+  .calendar__cell-status {
+    font-size: 0.48rem;
+    letter-spacing: 0;
+  }
+  .calendar__weekday {
+    font-size: 0.62rem;
+  }
+  .calendar__detail-time {
+    width: 60px;
+    font-size: 0.78rem;
+  }
+  .data-table th,
+  .data-table td {
+    padding: 0.5rem 0.5rem;
+    font-size: 0.82rem;
+  }
+  .site-header__brand-id {
+    font-size: 0.85rem;
+  }
+  .site-header__brand-school {
+    font-size: 0.7rem;
+  }
 }
