@@ -88,6 +88,8 @@ export default function CalendarClient({
           const dayEvents = eventsByDay.get(day) ?? [];
           const isToday = `${year}-${month}-${day}` === todayKey;
           const isSelected = selectedDay === day;
+          const visibleEvents = dayEvents.slice(0, 2);
+          const extraCount = dayEvents.length - visibleEvents.length;
           return (
             <button
               key={i}
@@ -97,7 +99,14 @@ export default function CalendarClient({
               onClick={() => setSelectedDay(day)}
             >
               <span className="calendar__cell-num">{day}</span>
-              <span className="calendar__cell-status">{dayEvents.length ? "Event" : "No Event"}</span>
+              <span className="calendar__cell-events">
+                {visibleEvents.map((e) => (
+                  <span className="calendar__cell-event" key={e.id} title={e.title}>
+                    {e.title}
+                  </span>
+                ))}
+                {extraCount > 0 && <span className="calendar__cell-more">+{extraCount} more</span>}
+              </span>
             </button>
           );
         })}

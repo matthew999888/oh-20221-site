@@ -987,23 +987,26 @@ a {
   letter-spacing: 0.04em;
 }
 .calendar__cell {
-  aspect-ratio: 1 / 1;
+  min-height: 88px;
   border-radius: 10px;
   border: 1px solid transparent;
   background: var(--bg-section);
   color: var(--text-200);
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.15rem;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 0.3rem;
+  padding: 0.4rem;
   cursor: pointer;
   font-family: var(--font-ui);
+  text-align: left;
   transition: box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease, transform 0.15s ease;
 }
 .calendar__cell--empty {
   background: transparent;
   cursor: default;
+  min-height: 88px;
 }
 .calendar__cell:not(.calendar__cell--empty):hover {
   border-color: var(--purple-400);
@@ -1022,6 +1025,36 @@ a {
   border-color: var(--purple-400);
   background: var(--bg-card-hover);
   box-shadow: 0 0 14px 2px var(--purple-glow);
+}
+.calendar__cell-num {
+  font-size: 0.85rem;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+.calendar__cell-events {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+.calendar__cell-event {
+  display: block;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: #fff;
+  background: linear-gradient(135deg, var(--purple-600), var(--purple-700));
+  padding: 0.12rem 0.4rem;
+  border-radius: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+.calendar__cell-more {
+  font-size: 0.58rem;
+  color: var(--text-400);
+  padding: 0 0.15rem;
 }
 .calendar__cell-dot {
   width: 5px;
@@ -2161,12 +2194,20 @@ a {
   .calendar__grid {
     gap: 0.25rem;
   }
-  .calendar__cell-num {
-    font-size: 0.82rem;
+  .calendar__cell,
+  .calendar__cell--empty {
+    min-height: 60px;
+    padding: 0.25rem;
   }
-  .calendar__cell-status {
+  .calendar__cell-num {
+    font-size: 0.7rem;
+  }
+  .calendar__cell-event {
+    font-size: 0.5rem;
+    padding: 0.08rem 0.25rem;
+  }
+  .calendar__cell-more {
     font-size: 0.48rem;
-    letter-spacing: 0;
   }
   .calendar__weekday {
     font-size: 0.62rem;
