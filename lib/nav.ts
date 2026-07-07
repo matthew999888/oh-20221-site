@@ -34,6 +34,7 @@ export const NAV_SECTIONS: NavSection[] = [
       { href: "/dashboard/promotion-scores", label: "Promotion Scores", icon: "fa-solid fa-chart-column", page: "promotion-scores" },
       { href: "/dashboard/guides", label: "Guides", icon: "fa-solid fa-book-open", page: "guide-links" },
       { href: "/dashboard/cadet-guide", label: "Cadet Guide", icon: "fa-solid fa-graduation-cap", page: "cadet-guide" },
+      { href: "/dashboard/events", label: "Event & Hours Tracker", icon: "fa-solid fa-clock", page: "events" },
       { href: "/gallery", label: "Gallery", icon: "fa-solid fa-images", page: "gallery" },
       { href: "/calendar", label: "Calendar", icon: "fa-solid fa-calendar-days", page: "calendar" }
     ]
@@ -57,7 +58,9 @@ export const NAV_SECTIONS: NavSection[] = [
     label: "Inspections & Forms",
     items: [
       { href: "/dashboard/inspection", label: "IG / Stan Eval Inspection", icon: "fa-solid fa-clipboard-check", page: "ig-inspection" },
-      { href: "/dashboard/superintendent-341", label: "Superintendent 341", icon: "fa-solid fa-file-signature", page: "superintendent-341" }
+      { href: "/dashboard/superintendent-341", label: "Superintendent 341", icon: "fa-solid fa-file-signature", page: "superintendent-341" },
+      { href: "/dashboard/forms/staff-journal", label: "Staff Journal Entry", icon: "fa-solid fa-book", page: "cadet-forms" },
+      { href: "/dashboard/forms/staff-evaluation", label: "Staff Cadet Evaluation", icon: "fa-solid fa-star-half-stroke", page: "cadet-forms" }
     ]
   },
   {

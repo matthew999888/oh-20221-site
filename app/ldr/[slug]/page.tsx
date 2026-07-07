@@ -1,5 +1,6 @@
 export const dynamic = "force-dynamic";
 
+import type { Metadata } from "next";
 import { getServerSession } from "next-auth";
 import Link from "next/link";
 import { authOptions } from "@/lib/auth";
@@ -9,6 +10,14 @@ import { getLdrRole, getOrCreateLdrReactionOptions } from "@/lib/org";
 import LdrContentEditor from "./LdrContentEditor";
 import AnnouncementList, { type LdrAnnouncement } from "./AnnouncementList";
 import GuideLinkList from "./GuideLinkList";
+
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+  const role = await getLdrRole(params.slug);
+  return {
+    title: role.name,
+    description: `News, resources, and info for ${role.name} — OH-20221 AFJROTC.`
+  };
+}
 
 export default async function LdrPage({ params }: { params: { slug: string } }) {
   const role = await getLdrRole(params.slug);

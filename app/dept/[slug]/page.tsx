@@ -1,5 +1,6 @@
 export const dynamic = "force-dynamic";
 
+import type { Metadata } from "next";
 import { getServerSession } from "next-auth";
 import Link from "next/link";
 import { authOptions } from "@/lib/auth";
@@ -7,6 +8,14 @@ import { prisma } from "@/lib/prisma";
 import { canEditDepartment } from "@/lib/permissions";
 import { getDepartmentRole } from "@/lib/org";
 import DeptContentEditor from "./DeptContentEditor";
+
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+  const role = await getDepartmentRole(params.slug);
+  return {
+    title: role.name,
+    description: `Information and resources from the ${role.name} — OH-20221 AFJROTC.`
+  };
+}
 
 export default async function DepartmentPage({ params }: { params: { slug: string } }) {
   const role = await getDepartmentRole(params.slug);

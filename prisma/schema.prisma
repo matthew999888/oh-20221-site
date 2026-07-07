@@ -206,7 +206,70 @@ model RosterEntry {
 
   user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
 
+  eventAttendance EventAttendance[]
+
   @@index([active])
+}
+
+// ASSUMPTION: OpsOrderStatus = singleton row (fixed id "singleton") holding
+// the two small at-a-glance fields shown at the top of the Ops Order page
+// — Uniform of the Day and this week's PT day/details — editable inline by
+// anyone with "ops-order" edit permission (see app/dashboard/ops-order).
+model OpsOrderStatus {
+  id              String   @id @default("singleton")
+  uniformOfTheDay String?
+  ptDay           String?
+  ptDetails       String?
+  updatedBy       String?
+  updatedAt       DateTime @updatedAt
+}
+
+// ASSUMPTION: EventType = the four attendance categories requested —
+// LDR, squadron activity, community service, and a catch-all "other".
+enum EventType {
+  ldr
+  squadron_activity
+  community_service
+  other
+}
+
+// ASSUMPTION: Event = the unit's attendance/hours tracker. Staff logs an
+// event once (title, type, date, default credited hours, location,
+// description) and records which cadets attended via EventAttendance.
+model Event {
+  id          String    @id @default(cuid())
+  title       String
+  type        EventType @default(other)
+  date        DateTime
+  hours       Float     @default(0)
+  location    String?
+  description String?
+  createdById String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  attendees EventAttendance[]
+
+  @@index([type])
+  @@index([date])
+}
+
+// Join table: which RosterEntry cadets attended a given Event.
+// `hoursOverride` lets one attendee's credited hours differ from the
+// event's default `hours` (e.g. they left early) — null means "use the
+// event's hours" for that cadet.
+model EventAttendance {
+  id            String   @id @default(cuid())
+  eventId       String
+  rosterEntryId String
+  hoursOverride Float?
+  createdAt     DateTime @default(now())
+
+  event       Event       @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  rosterEntry RosterEntry @relation(fields: [rosterEntryId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, rosterEntryId])
+  @@index([rosterEntryId])
 }
 
 // ASSUMPTION: InventoryItem = unit supply/uniform/equipment tracking.

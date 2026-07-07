@@ -1,6 +1,12 @@
 export const dynamic = "force-dynamic";
 
+import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
+
+export const metadata: Metadata = {
+  title: "Announcements",
+  description: "Unit-wide notices and updates from OH-20221 AFJROTC."
+};
 
 export default async function AnnouncementsPage() {
   const announcements = await prisma.announcement.findMany({

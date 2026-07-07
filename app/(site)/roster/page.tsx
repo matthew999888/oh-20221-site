@@ -1,6 +1,13 @@
 export const dynamic = "force-dynamic";
 
+import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
+import RosterClient from "./RosterClient";
+
+export const metadata: Metadata = {
+  title: "Cadet Roster",
+  description: "Current active cadets of OH-20221 AFJROTC."
+};
 
 // Public, read-only rendering of the active roster. All edits happen on
 // /dashboard/personnel (Personnel Officer / 1st Sergeant / admin only) —
@@ -14,38 +21,20 @@ export default async function PublicRosterPage() {
   return (
     <main className="page-section">
       <h1 className="page-section__title">Cadet Roster</h1>
-      <p className="page-section__sub">Current active cadets of OH-20221 AFJROTC.</p>
+      <p className="page-section__sub">
+        Current active cadets of OH-20221 AFJROTC &middot; {roster.length} cadet{roster.length === 1 ? "" : "s"}
+      </p>
 
-      {roster.length === 0 ? (
-        <p className="content-block__empty">No active cadets on record yet.</p>
-      ) : (
-        <div className="table-scroll">
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Rank</th>
-                <th>Grade</th>
-                <th>Flight</th>
-                <th>Position</th>
-              </tr>
-            </thead>
-            <tbody>
-              {roster.map((c) => (
-                <tr key={c.id}>
-                  <td>
-                    {c.lastName}, {c.firstName}
-                  </td>
-                  <td>{c.rank ?? "—"}</td>
-                  <td>{c.grade ?? "—"}</td>
-                  <td>{c.flight ?? "—"}</td>
-                  <td>{c.positionTitle ?? "—"}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+      <RosterClient
+        roster={roster.map((c) => ({
+          id: c.id,
+          name: `${c.lastName}, ${c.firstName}`,
+          rank: c.rank,
+          grade: c.grade,
+          flight: c.flight,
+          positionTitle: c.positionTitle
+        }))}
+      />
     </main>
   );
 }

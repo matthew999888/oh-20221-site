@@ -56,6 +56,7 @@ export default function CalendarClient({
 
   const prev = month === 0 ? { y: year - 1, m: 12 } : { y: year, m: month };
   const next = month === 11 ? { y: year + 1, m: 1 } : { y: year, m: month + 2 };
+  const isCurrentMonth = year === today.getFullYear() && month === today.getMonth();
 
   const selectedEvents = selectedDay ? eventsByDay.get(selectedDay) ?? [] : [];
   const selectedHasNoEvents = selectedDay !== null && selectedEvents.length === 0;
@@ -68,38 +69,50 @@ export default function CalendarClient({
         </Link>
         <h2 className="calendar__month-label">
           {MONTH_NAMES[month]} {year}
+          {!isCurrentMonth && (
+            <Link href="/calendar" className="calendar__today-link">
+              Today
+            </Link>
+          )}
         </h2>
         <Link href={`/calendar?y=${next.y}&m=${next.m}`} className="btn-ghost" aria-label="Next month">
           <i className="fa-solid fa-chevron-right" />
         </Link>
       </div>
 
-      <div className="calendar__grid calendar__grid--header">
+      <div className="calendar__grid calendar__grid--header" role="row">
         {WEEKDAY_NAMES.map((w) => (
-          <div className="calendar__weekday" key={w}>
+          <div className="calendar__weekday" key={w} role="columnheader">
             {w}
           </div>
         ))}
       </div>
 
-      <div className="calendar__grid">
+      <div className="calendar__grid" role="grid" aria-label={`${MONTH_NAMES[month]} ${year}`}>
         {cells.map((day, i) => {
-          if (day === null) return <div className="calendar__cell calendar__cell--empty" key={i} />;
+          if (day === null) return <div className="calendar__cell calendar__cell--empty" key={i} aria-hidden="true" />;
           const dayEvents = eventsByDay.get(day) ?? [];
           const isToday = `${year}-${month}-${day}` === todayKey;
           const isSelected = selectedDay === day;
           const visibleEvents = dayEvents.slice(0, 2);
           const extraCount = dayEvents.length - visibleEvents.length;
+          const dateLabel = `${MONTH_NAMES[month]} ${day}, ${year}`;
+          const eventSummary =
+            dayEvents.length === 0
+              ? "no events"
+              : `${dayEvents.length} event${dayEvents.length === 1 ? "" : "s"}: ${dayEvents.map((e) => e.title).join(", ")}`;
           return (
             <button
               key={i}
               className={`calendar__cell${isToday ? " is-today" : ""}${isSelected ? " is-selected" : ""}${
                 dayEvents.length ? " has-events" : ""
               }`}
+              aria-label={`${dateLabel}${isToday ? " (today)" : ""}, ${eventSummary}`}
+              aria-pressed={isSelected}
               onClick={() => setSelectedDay(day)}
             >
               <span className="calendar__cell-num">{day}</span>
-              <span className="calendar__cell-events">
+              <span className="calendar__cell-events" aria-hidden="true">
                 {visibleEvents.map((e) => (
                   <span className="calendar__cell-event" key={e.id} title={e.title}>
                     {e.title}

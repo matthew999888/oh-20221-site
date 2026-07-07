@@ -776,12 +776,48 @@ a {
   background: rgba(27, 58, 140, 0.22);
   color: #6f9bff;
 }
+.info-card--nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+.info-card--nav:hover {
+  border-color: rgba(139, 92, 200, 0.55);
+  transform: translateY(-2px);
+}
+.info-card__cta {
+  font-family: var(--font-ui);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--purple-300);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
 
 /* ── Announcements (full feed) ───────────────────────────────────── */
 .announcement-list {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+}
+.roster-filters {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+}
+.roster-filters input[type="search"] {
+  flex: 1 1 260px;
+}
+.roster-filters select {
+  flex: 0 1 200px;
+}
+.roster-filters__count {
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+  color: var(--text-400);
 }
 .announcement-card {
   background: var(--bg-card);
@@ -1019,6 +1055,23 @@ a {
 .calendar__month-label {
   font-family: var(--font-display);
   font-size: 1.3rem;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+.calendar__today-link {
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--purple-300);
+  border: 1px solid rgba(139, 92, 200, 0.35);
+  border-radius: 999px;
+  padding: 0.15rem 0.6rem;
+}
+.calendar__today-link:hover {
+  background: rgba(139, 92, 200, 0.15);
 }
 .calendar__grid {
   display: grid;

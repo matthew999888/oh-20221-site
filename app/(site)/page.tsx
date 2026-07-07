@@ -1,8 +1,15 @@
 export const dynamic = "force-dynamic";
 
+import type { Metadata } from "next";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { toDriveThumbnail } from "@/lib/google-drive";
+
+export const metadata: Metadata = {
+  title: "Home",
+  description:
+    "OH-20221 Air Force Junior ROTC at Logan High School — building better citizens through leadership, service, and discipline."
+};
 
 export default async function HomePage() {
   const [announcements, events, galleries] = await Promise.all([

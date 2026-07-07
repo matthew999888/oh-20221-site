@@ -49,6 +49,8 @@ export type PageKey =
   | "promotions"
   | "promotion-scores"
   | "cadet-guide"
+  | "events"
+  | "cadet-forms"
   | "ig-inspection"
   | "superintendent-341"
   | "users-admin"
@@ -87,6 +89,8 @@ const ALL_PAGE_KEYS: PageKey[] = [
   "promotions",
   "promotion-scores",
   "cadet-guide",
+  "events",
+  "cadet-forms",
   "ig-inspection",
   "superintendent-341",
   "users-admin",
@@ -107,7 +111,9 @@ const BASIC_VIEW_PAGES: PageKey[] = [
   "reactions",
   "ops-order",
   "promotions",
-  "cadet-guide"
+  "cadet-guide",
+  "events",
+  "cadet-forms"
 ];
 
 type PagePermissionMap = Partial<Record<PageKey, PermissionLevel>>;
@@ -115,16 +121,16 @@ type PagePermissionMap = Partial<Record<PageKey, PermissionLevel>>;
 // Slugs below must match prisma/seed.ts's slugify() output for the role
 // names (e.g. "Logistics Officer" -> "logistics-officer").
 const DEPARTMENT_PERMISSIONS: Record<string, PagePermissionMap> = {
-  "corps-commander": { announcements: "edit", roster: "edit", calendar: "edit", "ops-order": "edit", "promotion-scores": "view" },
-  "vice-corps-commander": { announcements: "edit", roster: "edit", calendar: "edit", "ops-order": "edit", "promotion-scores": "view" },
-  "executive-officer": { announcements: "edit", roster: "view", calendar: "edit", "ops-order": "edit", "promotion-scores": "view" },
+  "corps-commander": { announcements: "edit", roster: "edit", calendar: "edit", "ops-order": "edit", "promotion-scores": "view", events: "edit" },
+  "vice-corps-commander": { announcements: "edit", roster: "edit", calendar: "edit", "ops-order": "edit", "promotion-scores": "view", events: "edit" },
+  "executive-officer": { announcements: "edit", roster: "view", calendar: "edit", "ops-order": "edit", "promotion-scores": "view", events: "edit" },
   superintendent: { roster: "view", inventory: "view", "superintendent-341": "edit", "promotion-scores": "view" },
-  "1st-sergeant": { roster: "view", personnel: "edit", promotions: "edit", "promotion-scores": "view" },
+  "1st-sergeant": { roster: "view", personnel: "edit", promotions: "edit", "promotion-scores": "view", events: "edit" },
   "inspector-general": { "activity-log": "view", roster: "view", "ig-inspection": "edit" },
   "stan-eval-officer": { "activity-log": "view", "ig-inspection": "edit" },
-  "director-of-operations": { calendar: "edit", "guide-links": "edit", "ops-order": "edit" },
-  "personnel-officer": { personnel: "edit", "users-admin": "view", promotions: "edit" },
-  "training-officer": { calendar: "edit", "guide-links": "edit", "cadet-guide": "edit" },
+  "director-of-operations": { calendar: "edit", "guide-links": "edit", "ops-order": "edit", events: "edit" },
+  "personnel-officer": { personnel: "edit", "users-admin": "view", promotions: "edit", events: "edit" },
+  "training-officer": { calendar: "edit", "guide-links": "edit", "cadet-guide": "edit", events: "edit" },
   "finance-officer": { inventory: "view" },
   "public-affairs-officer-communications": {
     announcements: "edit",
@@ -144,7 +150,7 @@ const DEPARTMENT_PERMISSIONS: Record<string, PagePermissionMap> = {
   },
   "health-and-wellness-officer": { "guide-links": "edit" },
   "special-teams-officer": { calendar: "edit" },
-  "cadet-project-manager-cpm": { calendar: "edit", announcements: "edit" }
+  "cadet-project-manager-cpm": { calendar: "edit", announcements: "edit", events: "edit" }
 };
 
 const LDR_PERMISSIONS: Record<string, PagePermissionMap> = {
