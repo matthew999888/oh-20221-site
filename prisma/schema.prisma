@@ -48,6 +48,8 @@ model User {
   activityLogs   ActivityLog[]
   rosterEntry    RosterEntry?
   promotionTestAttempts PromotionTestAttempt[]
+  staffJournalEntries   StaffJournalEntry[]
+  staffEvaluations      StaffEvaluation[]
 
   @@index([status])
 }
@@ -220,6 +222,7 @@ model OpsOrderStatus {
   uniformOfTheDay String?
   ptDay           String?
   ptDetails       String?
+  honorCode       String?
   updatedBy       String?
   updatedAt       DateTime @updatedAt
 }
@@ -384,4 +387,47 @@ model PromotionTestAttempt {
 
   @@index([userId, rank])
   @@index([submittedAt])
+}
+// ASSUMPTION: StaffJournalEntry = the monthly "Cadet Staff Journal Entry
+// Sheet." One row per submission; authorId ties it to the submitting
+// cadet so they (and staff/admin) can see their own submission history.
+model StaffJournalEntry {
+  id            String   @id @default(cuid())
+  authorId      String
+  period        String
+  jobTitle      String
+  didThisMonth  String
+  comingUp      String
+  barriers      String
+  createdAt     DateTime @default(now())
+
+  author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([authorId])
+  @@index([createdAt])
+}
+
+// ASSUMPTION: StaffEvaluation = the "Staff Cadet Evaluation" form.
+// `ratings`/`comments` are stored as JSON keyed by criterion id (see
+// CRITERIA in StaffEvaluationForm.tsx) since the criteria list itself
+// isn't cadet-editable data. `evaluatorId` is the signed-in staff member
+// submitting it; the cadet being evaluated is free text (cadets aren't
+// all guaranteed a User/RosterEntry row).
+model StaffEvaluation {
+  id           String   @id @default(cuid())
+  evaluatorId  String
+  cadetName    String
+  cadetRank    String?
+  cadetFlight  String?
+  evalDate     DateTime
+  readiness    String? // "ready" | "not-ready" | null
+  ratings      Json
+  comments     Json
+  totalScore   Int
+  createdAt    DateTime @default(now())
+
+  evaluator User @relation(fields: [evaluatorId], references: [id], onDelete: Cascade)
+
+  @@index([evaluatorId])
+  @@index([createdAt])
 }
