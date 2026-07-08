@@ -2334,8 +2334,20 @@ a {
 
 /* ══ Ops Order (Daily Operations Order — Honor Code / status / feeds) ══ */
 .oo-header {
+  position: relative;
   text-align: center;
   padding: 0.5rem 0 0.25rem;
+}
+.oo-fullscreen-toggle {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.oo-shell--fullscreen {
+  background: var(--bg-body);
+  overflow-y: auto;
+  padding: 1.5rem 2rem;
+  height: 100%;
 }
 .oo-header__eyebrow {
   font-family: var(--font-ui);

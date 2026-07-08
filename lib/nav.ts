@@ -60,7 +60,8 @@ export const NAV_SECTIONS: NavSection[] = [
       { href: "/dashboard/inspection", label: "IG / Stan Eval Inspection", icon: "fa-solid fa-clipboard-check", page: "ig-inspection" },
       { href: "/dashboard/superintendent-341", label: "Superintendent 341", icon: "fa-solid fa-file-signature", page: "superintendent-341" },
       { href: "/dashboard/forms/staff-journal", label: "Staff Journal Entry", icon: "fa-solid fa-book", page: "cadet-forms" },
-      { href: "/dashboard/forms/staff-evaluation", label: "Staff Cadet Evaluation", icon: "fa-solid fa-star-half-stroke", page: "cadet-forms" }
+      { href: "/dashboard/forms/staff-evaluation", label: "Staff Cadet Evaluation", icon: "fa-solid fa-star-half-stroke", page: "cadet-forms" },
+      { href: "/dashboard/forms/review", label: "Staff Forms Review", icon: "fa-solid fa-folder-open", page: "staff-forms-review" }
     ]
   },
   {

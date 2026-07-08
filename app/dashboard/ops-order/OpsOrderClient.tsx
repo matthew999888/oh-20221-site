@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { updateOpsOrderStatus } from "./_actions";
 
 type Difficulty = "full" | "75" | "50" | "25" | "first" | "blanks";
@@ -64,11 +64,19 @@ export default function OpsOrderClient({
   staffMessages
 }: {
   editable: boolean;
-  status: { uniformOfTheDay: string; ptDay: string; ptDetails: string; honorCode: string };
+  status: {
+    uniformOfTheDay: string;
+    ptDay: string;
+    ptDetails: string;
+    honorCode: string;
+    honorCodeTitle: string;
+    honorCodeLead: string;
+  };
   upcomingEvents: EventLite[];
   ldrThisWeek: EventLite[];
   staffMessages: MessageLite[];
 }) {
+  const containerRef = useRef<HTMLDivElement>(null);
   const [slide, setSlide] = useState(0);
   const [difficulty, setDifficulty] = useState<Difficulty>("full");
   const [editingStatus, setEditingStatus] = useState(false);
@@ -76,7 +84,10 @@ export default function OpsOrderClient({
   const [ptDay, setPtDay] = useState(status.ptDay);
   const [ptDetails, setPtDetails] = useState(status.ptDetails);
   const [honorCode, setHonorCode] = useState(status.honorCode);
+  const [honorCodeTitle, setHonorCodeTitle] = useState(status.honorCodeTitle);
+  const [honorCodeLead, setHonorCodeLead] = useState(status.honorCodeLead);
   const [saving, setSaving] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   const words = useMemo(() => honorCode.split(" ").filter(Boolean), [honorCode]);
   const todayLabel = useMemo(
@@ -93,10 +104,27 @@ export default function OpsOrderClient({
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
+  useEffect(() => {
+    function onFsChange() {
+      setIsFullscreen(Boolean(document.fullscreenElement));
+    }
+    document.addEventListener("fullscreenchange", onFsChange);
+    return () => document.removeEventListener("fullscreenchange", onFsChange);
+  }, []);
+
+  async function toggleFullscreen() {
+    if (!containerRef.current) return;
+    if (!document.fullscreenElement) {
+      await containerRef.current.requestFullscreen().catch(() => {});
+    } else {
+      await document.exitFullscreen().catch(() => {});
+    }
+  }
+
   async function saveStatus() {
     setSaving(true);
     try {
-      await updateOpsOrderStatus({ uniformOfTheDay: uniform, ptDay, ptDetails, honorCode });
+      await updateOpsOrderStatus({ uniformOfTheDay: uniform, ptDay, ptDetails, honorCode, honorCodeTitle, honorCodeLead });
       setEditingStatus(false);
     } finally {
       setSaving(false);
@@ -104,8 +132,17 @@ export default function OpsOrderClient({
   }
 
   return (
-    <div className="dash-page">
+    <div className={`dash-page oo-shell${isFullscreen ? " oo-shell--fullscreen" : ""}`} ref={containerRef}>
       <div className="oo-header">
+        <button
+          type="button"
+          className="btn-small oo-fullscreen-toggle"
+          onClick={toggleFullscreen}
+          aria-label={isFullscreen ? "Exit full screen" : "Enter full screen"}
+        >
+          <i className={`fa-solid ${isFullscreen ? "fa-compress" : "fa-expand"}`} />{" "}
+          {isFullscreen ? "Exit Full Screen" : "Full Screen"}
+        </button>
         <p className="oo-header__eyebrow">OH-20221 AFJROTC</p>
         <h1 className="oo-header__title">Daily Operations Order</h1>
         <p className="oo-header__date">{todayLabel}</p>
@@ -114,9 +151,27 @@ export default function OpsOrderClient({
       {slide === 0 ? (
         <>
           <section className="dash-card dash-card--full oo-honorcode">
-            <h2 className="oo-honorcode__title">Cadet Honor Code</h2>
+            {editingStatus ? (
+              <input
+                className="form-input"
+                value={honorCodeTitle}
+                onChange={(e) => setHonorCodeTitle(e.target.value)}
+                style={{ textAlign: "center", marginBottom: "0.5rem", fontWeight: 700 }}
+              />
+            ) : (
+              <h2 className="oo-honorcode__title">{honorCodeTitle}</h2>
+            )}
             <div className="oo-honorcode__rule" />
-            <p className="oo-honorcode__lead">The Cadet Honor Code is...</p>
+            {editingStatus ? (
+              <input
+                className="form-input"
+                value={honorCodeLead}
+                onChange={(e) => setHonorCodeLead(e.target.value)}
+                style={{ textAlign: "center", marginBottom: "0.75rem" }}
+              />
+            ) : (
+              <p className="oo-honorcode__lead">{honorCodeLead}</p>
+            )}
             {editingStatus ? (
               <textarea
                 className="form-input"
@@ -194,6 +249,8 @@ export default function OpsOrderClient({
                       setPtDay(status.ptDay);
                       setPtDetails(status.ptDetails);
                       setHonorCode(status.honorCode);
+                      setHonorCodeTitle(status.honorCodeTitle);
+                      setHonorCodeLead(status.honorCodeLead);
                       setEditingStatus(false);
                     }}
                   >

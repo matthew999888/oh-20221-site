@@ -223,6 +223,8 @@ model OpsOrderStatus {
   ptDay           String?
   ptDetails       String?
   honorCode       String?
+  honorCodeTitle  String?
+  honorCodeLead   String?
   updatedBy       String?
   updatedAt       DateTime @updatedAt
 }

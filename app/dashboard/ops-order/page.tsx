@@ -5,6 +5,8 @@ import { prisma } from "@/lib/prisma";
 import OpsOrderClient from "./OpsOrderClient";
 
 const DEFAULT_HONOR_CODE = "I will not lie, cheat, or steal, nor will I tolerate those who do.";
+const DEFAULT_HONOR_CODE_TITLE = "Cadet Honor Code";
+const DEFAULT_HONOR_CODE_LEAD = "The Cadet Honor Code is...";
 
 function startOfWeek(d: Date) {
   const day = d.getDay(); // 0 = Sunday
@@ -55,7 +57,9 @@ export default async function OpsOrderPage() {
         uniformOfTheDay: status?.uniformOfTheDay ?? "",
         ptDay: status?.ptDay ?? "",
         ptDetails: status?.ptDetails ?? "",
-        honorCode: status?.honorCode ?? DEFAULT_HONOR_CODE
+        honorCode: status?.honorCode ?? DEFAULT_HONOR_CODE,
+        honorCodeTitle: status?.honorCodeTitle ?? DEFAULT_HONOR_CODE_TITLE,
+        honorCodeLead: status?.honorCodeLead ?? DEFAULT_HONOR_CODE_LEAD
       }}
       upcomingEvents={upcomingEvents.map((e) => ({
         id: e.id,

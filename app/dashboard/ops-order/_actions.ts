@@ -10,6 +10,8 @@ export type OpsOrderStatusInput = {
   ptDay: string;
   ptDetails: string;
   honorCode: string;
+  honorCodeTitle: string;
+  honorCodeLead: string;
 };
 
 export async function updateOpsOrderStatus(data: OpsOrderStatusInput) {
@@ -23,6 +25,8 @@ export async function updateOpsOrderStatus(data: OpsOrderStatusInput) {
       ptDay: data.ptDay.trim() || null,
       ptDetails: data.ptDetails.trim() || null,
       honorCode: data.honorCode.trim() || null,
+      honorCodeTitle: data.honorCodeTitle.trim() || null,
+      honorCodeLead: data.honorCodeLead.trim() || null,
       updatedBy: session.user.id
     },
     update: {
@@ -30,6 +34,8 @@ export async function updateOpsOrderStatus(data: OpsOrderStatusInput) {
       ptDay: data.ptDay.trim() || null,
       ptDetails: data.ptDetails.trim() || null,
       honorCode: data.honorCode.trim() || null,
+      honorCodeTitle: data.honorCodeTitle.trim() || null,
+      honorCodeLead: data.honorCodeLead.trim() || null,
       updatedBy: session.user.id
     }
   });
