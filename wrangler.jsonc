@@ -28,9 +28,9 @@
     "NODE_ENV": "production"
   }
 
-  // ── Optional: uncomment once you have a custom domain ──────────────
+  // ── Optional: only if you deploy to Workers instead of Vercel ──────
   // "routes": [
-  //   { "pattern": "oh20221.example.org", "custom_domain": true }
+  //   { "pattern": "loganjrotc.org", "custom_domain": true }
   // ],
 
   // ── Optional: R2 bucket for the incremental cache ──────────────────

@@ -373,7 +373,7 @@ Production (and Preview, if previews should hit the same database):
 |---|---|
 | `DATABASE_URL` | Supabase **pooled** string (Transaction mode, port 6543) |
 | `DIRECT_URL` | Supabase **direct** string (port 5432) — migrations only |
-| `NEXTAUTH_URL` | Your production URL, e.g. `https://oh-20221.vercel.app` |
+| `NEXTAUTH_URL` | `https://loganjrotc.org` — the canonical domain, no trailing slash |
 | `NEXTAUTH_SECRET` | `openssl rand -base64 32` — **generate a fresh one**, don't reuse dev |
 | `UPSTASH_REDIS_REST_URL` | From the Upstash console |
 | `UPSTASH_REDIS_REST_TOKEN` | From the Upstash console |
