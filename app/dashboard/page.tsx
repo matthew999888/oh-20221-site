@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import { prisma } from "@/lib/prisma";
-import { requirePagePermission } from "@/lib/permissions";
+import { requirePagePermission } from "@/lib/permissions-server";
 import Link from "next/link";
 
 export default async function DashboardHomePage() {

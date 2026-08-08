@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 
-import { requirePagePermission, canEdit } from "@/lib/permissions";
+import { requirePagePermission } from "@/lib/permissions-server";
+import { canEdit } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 import UsersAdminClient, { type AdminUser, type RoleOption, type ActivityLogEntry } from "./UsersAdminClient";
 

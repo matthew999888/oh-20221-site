@@ -1,0 +1,41 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "oh-20221-site",
+  "main": ".open-next/worker.js",
+
+  // Keep this within ~a week of your installed wrangler version.
+  "compatibility_date": "2025-03-25",
+
+  // nodejs_compat is REQUIRED, not optional:
+  //  - Next.js server code uses Node built-ins (stream, buffer, crypto)
+  //  - @prisma/adapter-pg needs TCP sockets to reach Postgres
+  "compatibility_flags": ["nodejs_compat"],
+
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+
+  "observability": {
+    "enabled": true
+  },
+
+  // Non-secret values only. Secrets (DATABASE_URL, NEXTAUTH_SECRET,
+  // TURNSTILE_SECRET_KEY, UPSTASH_REDIS_REST_TOKEN) must be set with
+  // `wrangler secret put <NAME>` — never listed here, because this file
+  // is committed to git.
+  "vars": {
+    "NODE_ENV": "production"
+  }
+
+  // ── Optional: uncomment once you have a custom domain ──────────────
+  // "routes": [
+  //   { "pattern": "oh20221.example.org", "custom_domain": true }
+  // ],
+
+  // ── Optional: R2 bucket for the incremental cache ──────────────────
+  // See open-next.config.ts. Requires the Workers Paid plan.
+  // "r2_buckets": [
+  //   { "binding": "NEXT_INC_CACHE_R2_BUCKET", "bucket_name": "oh-20221-cache" }
+  // ]
+}

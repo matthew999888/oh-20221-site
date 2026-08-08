@@ -1,15 +1,21 @@
 export const dynamic = "force-dynamic";
 
 import { notFound } from "next/navigation";
-import { requirePagePermission } from "@/lib/permissions";
+import { requirePagePermission } from "@/lib/permissions-server";
 import { prisma } from "@/lib/prisma";
 import { RANK_NAMES, isValidRank } from "@/lib/promotion-ranks";
 import PromotionTestClient from "./PromotionTestClient";
 
 const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 
-export default async function PromotionRankTestPage({ params }: { params: { rank: string } }) {
-  const rank = parseInt(params.rank, 10);
+// Next 15: `params` is a Promise and must be awaited.
+export default async function PromotionRankTestPage({
+  params
+}: {
+  params: Promise<{ rank: string }>;
+}) {
+  const { rank: rankParam } = await params;
+  const rank = parseInt(rankParam, 10);
   if (!isValidRank(rank)) notFound();
 
   const session = await requirePagePermission("promotions", "view");

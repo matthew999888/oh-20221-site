@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 
-import { requirePagePermission, canEdit } from "@/lib/permissions";
+import { requirePagePermission } from "@/lib/permissions-server";
+import { canEdit } from "@/lib/permissions";
 import { getContentBlock } from "@/lib/content-blocks";
 import ContentBlockSection from "@/components/dashboard/ContentBlockSection";
 

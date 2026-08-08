@@ -3,6 +3,7 @@ export const dynamic = "force-dynamic";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { toDriveThumbnail } from "@/lib/google-drive";
+import PageHeader from "../PageHeader";
 import GalleryIndexClient from "./GalleryIndexClient";
 
 export const metadata: Metadata = {
@@ -25,15 +26,22 @@ export default async function GalleryIndexPage() {
   }));
 
   return (
-    <main className="page-section">
-      <h1 className="page-section__title">Gallery</h1>
-      <p className="page-section__sub">Photos from drill meets, ceremonies, and unit events.</p>
+    <>
+      <PageHeader
+        eyebrow="In Pictures"
+        title="Gallery"
+        lede="Photos from drill meets, ceremonies, competitions, and unit events."
+      />
 
-      {galleries.length === 0 ? (
-        <p className="content-block__empty">No galleries published yet.</p>
-      ) : (
-        <GalleryIndexClient galleries={galleryDTOs} />
-      )}
-    </main>
+      <div className="pub-section pub-section--tight">
+        <div className="pub-wrap">
+          {galleries.length === 0 ? (
+            <p className="pub-empty">No galleries published yet.</p>
+          ) : (
+            <GalleryIndexClient galleries={galleryDTOs} />
+          )}
+        </div>
+      </div>
+    </>
   );
 }

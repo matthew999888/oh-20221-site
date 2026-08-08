@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import Link from "next/link";
-import { requirePagePermission } from "@/lib/permissions";
+import { requirePagePermission } from "@/lib/permissions-server";
 import { prisma } from "@/lib/prisma";
 import { RANK_NAMES, RANK_ORDER } from "@/lib/promotion-ranks";
 

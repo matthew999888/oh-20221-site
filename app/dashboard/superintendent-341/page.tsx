@@ -1,6 +1,6 @@
 export const dynamic = "force-dynamic";
 
-import { requirePagePermission } from "@/lib/permissions";
+import { requirePagePermission } from "@/lib/permissions-server";
 import Form341 from "./Form341";
 
 export default async function Superintendent341Page() {

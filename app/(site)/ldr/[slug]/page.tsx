@@ -7,20 +7,28 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { canEditLdr } from "@/lib/permissions";
 import { getLdrRole, getOrCreateLdrReactionOptions } from "@/lib/org";
+import PageHeader from "../../PageHeader";
 import LdrContentEditor from "./LdrContentEditor";
 import AnnouncementList, { type LdrAnnouncement } from "./AnnouncementList";
 import GuideLinkList from "./GuideLinkList";
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const role = await getLdrRole(params.slug);
+// Next 15: `params` is a Promise and must be awaited.
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const role = await getLdrRole(slug);
   return {
     title: role.name,
     description: `News, resources, and info for ${role.name} — OH-20221 AFJROTC.`
   };
 }
 
-export default async function LdrPage({ params }: { params: { slug: string } }) {
-  const role = await getLdrRole(params.slug);
+export default async function LdrPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const role = await getLdrRole(slug);
   const session = await getServerSession(authOptions);
   const roleSlugs = session?.user.roles ?? [];
   const userId = session?.user.id;
@@ -75,35 +83,50 @@ export default async function LdrPage({ params }: { params: { slug: string } }) 
   }));
 
   return (
-    <main className="page-section">
-      <Link href="/dashboard" className="back-link">
-        <i className="fa-solid fa-arrow-left" /> Back to dashboard
-      </Link>
-
-      {editable && (
-        <p className="content-block__empty" style={{ marginBottom: "1rem" }}>
-          <i className="fa-solid fa-pen" /> You're signed in as this team's lead — edits save instantly.
-        </p>
-      )}
-
-      <LdrContentEditor
-        ldrSlug={role.slug}
-        contentBlockId={block.id}
-        initialTitle={block.title}
-        initialDescription={block.description ?? ""}
-        initialBoxes={block.boxes}
-        canEdit={editable}
+    <>
+      {/* No <main> here — app/(site)/layout.tsx already provides one, and
+          a second would be a duplicate landmark. The old "back to
+          dashboard" link was replaced by a breadcrumb because this page
+          is public: a signed-out visitor following it hit the login wall. */}
+      <PageHeader
+        eyebrow="Team or Activity"
+        title={role.name}
+        crumbs={[{ href: "/ldr", label: "Teams & Activities" }]}
       />
 
-      <AnnouncementList
-        ldrSlug={role.slug}
-        initialAnnouncements={announcementsWithReactions}
-        reactionOptions={reactionOptions.map((o) => ({ id: o.id, emoji: o.emoji, label: o.label }))}
-        canEdit={editable}
-        canReact={canReact}
-      />
+      <div className="pub-section pub-section--tight">
+        <div className="pub-wrap">
+          {editable && (
+            <p className="pub-callout" style={{ marginTop: 0 }}>
+              <i className="fa-solid fa-pen" aria-hidden="true" /> You&rsquo;re signed in as this
+              team&rsquo;s lead — edits save instantly.
+            </p>
+          )}
 
-      <GuideLinkList ldrSlug={role.slug} initialLinks={guideLinks} canEdit={editable} />
-    </main>
+          <LdrContentEditor
+            ldrSlug={role.slug}
+            contentBlockId={block.id}
+            initialTitle={block.title}
+            initialDescription={block.description ?? ""}
+            initialBoxes={block.boxes}
+            canEdit={editable}
+          />
+
+          <AnnouncementList
+            ldrSlug={role.slug}
+            initialAnnouncements={announcementsWithReactions}
+            reactionOptions={reactionOptions.map((o) => ({
+              id: o.id,
+              emoji: o.emoji,
+              label: o.label
+            }))}
+            canEdit={editable}
+            canReact={canReact}
+          />
+
+          <GuideLinkList ldrSlug={role.slug} initialLinks={guideLinks} canEdit={editable} />
+        </div>
+      </div>
+    </>
   );
 }

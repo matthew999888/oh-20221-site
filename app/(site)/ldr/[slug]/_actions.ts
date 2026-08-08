@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
-import { assertLdrEdit, requireApprovedSession } from "@/lib/permissions";
+import { assertLdrEdit, requireApprovedSession } from "@/lib/permissions-server";
 import { logActivity } from "@/lib/activity-log";
 
 function path(ldrSlug: string) {

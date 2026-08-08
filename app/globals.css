@@ -45,16 +45,114 @@
   --font-display: "Oswald", "Arial Narrow", Arial, sans-serif;
   --font-body: "Inter", system-ui, -apple-system, sans-serif;
   --font-ui: "Rajdhani", "Arial Narrow", Arial, sans-serif;
+
+  /* ── v2 public-site tokens ─────────────────────────────────────────
+     Text colors below are contrast-checked against --bg-body (#07091a)
+     and --bg-card (#111835) for WCAG 2.1 AA (4.5:1 body, 3:1 large).
+     Do not darken --ink-muted further without re-checking. */
+  /* Ratios measured against --bg-body / --bg-card / table header #131a3c.
+     The lowest of the three is shown; all four pass AA (4.5:1) on all
+     three surfaces. Re-measure if you change any background. */
+  --ink-strong: #f4f6fb; /* 15.7:1 */
+  --ink: #d7dced; /* 12.4:1 */
+  --ink-muted: #a2accb; /*  7.5:1 */
+  --ink-faint: #7d88a6; /*  4.8:1 — the AA floor; do not darken */
+
+  --accent: #a689e8; /*  5.9:1 — links/eyebrows */
+  --accent-strong: #5b2d9e; /* fills only, never text on dark */
+  --accent-ink: #ffffff; /* text on --accent-strong fills */
+
+  --line: rgba(150, 128, 210, 0.16);
+  --line-strong: rgba(150, 128, 210, 0.34);
+
+  --focus-ring: #b9a1f5;
+  --focus-ring-offset: var(--bg-body);
+
+  /* Fluid type scale */
+  --step--1: clamp(0.8rem, 0.77rem + 0.15vw, 0.875rem);
+  --step-0: clamp(0.95rem, 0.92rem + 0.16vw, 1.03rem);
+  --step-1: clamp(1.15rem, 1.08rem + 0.34vw, 1.35rem);
+  --step-2: clamp(1.45rem, 1.32rem + 0.63vw, 1.85rem);
+  --step-3: clamp(1.85rem, 1.6rem + 1.2vw, 2.6rem);
+  --step-4: clamp(2.3rem, 1.85rem + 2.2vw, 3.8rem);
+  --step-5: clamp(2.9rem, 2rem + 4.4vw, 6rem);
+
+  /* Spacing rhythm */
+  --sp-1: 0.25rem;
+  --sp-2: 0.5rem;
+  --sp-3: 0.75rem;
+  --sp-4: 1rem;
+  --sp-5: 1.5rem;
+  --sp-6: 2rem;
+  --sp-7: 3rem;
+  --sp-8: 4.5rem;
+  --sp-9: 6.5rem;
+
+  --radius-sm: 8px;
+  --radius: 14px;
+  --radius-lg: 22px;
+
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-2: 0 8px 24px -8px rgba(0, 0, 0, 0.55);
+  --shadow-3: 0 24px 64px -20px rgba(0, 0, 0, 0.7);
+
+  --wrap: 1180px;
+  --wrap-narrow: 760px;
 }
 
+/* Reduced motion: neutralize animation, but never `transform` —
+   blanket `transform: none` breaks centering/layout, it does not
+   calm motion. Long transitions collapse to ~0 rather than `none`
+   so state changes still fire transitionend handlers. */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
-    transition: none !important;
-    animation: none !important;
-    transform: none !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
+}
+
+/* ── Focus visibility (WCAG 2.4.7) ─────────────────────────────────
+   Applied globally: every interactive element gets a visible ring on
+   keyboard focus. `:focus-visible` keeps it off for mouse users. */
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* Screen-reader-only text that stays focusable. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Skip link — first tabbable element on every page (WCAG 2.4.1). */
+.skip-link {
+  position: absolute;
+  left: var(--sp-4);
+  top: -100%;
+  z-index: 100;
+  padding: 0.75rem 1.25rem;
+  background: var(--accent-strong);
+  color: var(--accent-ink);
+  font-family: var(--font-ui);
+  font-weight: 700;
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+  transition: top 0.15s ease;
+}
+.skip-link:focus {
+  top: 0;
 }
 
 html {

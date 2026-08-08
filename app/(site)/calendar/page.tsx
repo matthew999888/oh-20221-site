@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
+import PageHeader from "../PageHeader";
 import CalendarClient from "./CalendarClient";
 
 const MONTH_NAMES = [
@@ -9,10 +10,16 @@ const MONTH_NAMES = [
   "July", "August", "September", "October", "November", "December"
 ];
 
-export function generateMetadata({ searchParams }: { searchParams: { y?: string; m?: string } }): Metadata {
+// Next 15: `searchParams` is a Promise and must be awaited.
+export async function generateMetadata({
+  searchParams
+}: {
+  searchParams: Promise<{ y?: string; m?: string }>;
+}): Promise<Metadata> {
+  const { y, m } = await searchParams;
   const now = new Date();
-  const year = parseInt(searchParams.y ?? "", 10) || now.getFullYear();
-  const month = (parseInt(searchParams.m ?? "", 10) || now.getMonth() + 1) - 1;
+  const year = parseInt(y ?? "", 10) || now.getFullYear();
+  const month = (parseInt(m ?? "", 10) || now.getMonth() + 1) - 1;
   return {
     title: `Calendar — ${MONTH_NAMES[month] ?? ""} ${year}`,
     description: "Drill nights, PT, ceremonies, and competitions for OH-20221 AFJROTC."
@@ -22,11 +29,12 @@ export function generateMetadata({ searchParams }: { searchParams: { y?: string;
 export default async function CalendarPage({
   searchParams
 }: {
-  searchParams: { y?: string; m?: string };
+  searchParams: Promise<{ y?: string; m?: string }>;
 }) {
+  const { y, m } = await searchParams;
   const now = new Date();
-  const year = parseInt(searchParams.y ?? "", 10) || now.getFullYear();
-  const month = (parseInt(searchParams.m ?? "", 10) || now.getMonth() + 1) - 1; // 0-indexed
+  const year = parseInt(y ?? "", 10) || now.getFullYear();
+  const month = (parseInt(m ?? "", 10) || now.getMonth() + 1) - 1; // 0-indexed
 
   const rangeStart = new Date(year, month, 1);
   const rangeEnd = new Date(year, month + 1, 1);
@@ -48,10 +56,18 @@ export default async function CalendarPage({
   }));
 
   return (
-    <main className="page-section">
-      <h1 className="page-section__title">Calendar</h1>
-      <p className="page-section__sub">Drill nights, PT, ceremonies, and competitions. Click a day to see details.</p>
-      <CalendarClient year={year} month={month} events={serialized} />
-    </main>
+    <>
+      <PageHeader
+        eyebrow="Unit Schedule"
+        title="Calendar"
+        lede="Drill nights, PT, ceremonies, and competitions. Select a day to see its details."
+      />
+
+      <div className="pub-section pub-section--tight">
+        <div className="pub-wrap">
+          <CalendarClient year={year} month={month} events={serialized} />
+        </div>
+      </div>
+    </>
   );
 }

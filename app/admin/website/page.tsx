@@ -1,6 +1,6 @@
 export const dynamic = "force-dynamic";
 
-import { requirePagePermission } from "@/lib/permissions";
+import { requirePagePermission } from "@/lib/permissions-server";
 import { prisma } from "@/lib/prisma";
 import WebsiteAdminTabs from "./WebsiteAdminTabs";
 import AnnouncementsEditor, { type SiteAnnouncement } from "./AnnouncementsEditor";

@@ -64,8 +64,9 @@ export default function CalendarClient({
   return (
     <div className="calendar">
       <div className="calendar__toolbar">
-        <Link href={`/calendar?y=${prev.y}&m=${prev.m}`} className="btn-ghost" aria-label="Previous month">
-          <i className="fa-solid fa-chevron-left" />
+        <Link href={`/calendar?y=${prev.y}&m=${prev.m}`} className="pub-btn pub-btn--quiet">
+          <i className="fa-solid fa-chevron-left" aria-hidden="true" />
+          <span className="sr-only">Previous month</span>
         </Link>
         <h2 className="calendar__month-label">
           {MONTH_NAMES[month]} {year}
@@ -75,20 +76,32 @@ export default function CalendarClient({
             </Link>
           )}
         </h2>
-        <Link href={`/calendar?y=${next.y}&m=${next.m}`} className="btn-ghost" aria-label="Next month">
-          <i className="fa-solid fa-chevron-right" />
+        <Link href={`/calendar?y=${next.y}&m=${next.m}`} className="pub-btn pub-btn--quiet">
+          <i className="fa-solid fa-chevron-right" aria-hidden="true" />
+          <span className="sr-only">Next month</span>
         </Link>
       </div>
 
-      <div className="calendar__grid calendar__grid--header" role="row">
+      {/* Weekday strip is a purely visual column guide. It's hidden from
+          assistive tech because each day button already announces its
+          full date, so reading "Sun Mon Tue…" first is just noise. */}
+      <div className="calendar__grid calendar__grid--header" aria-hidden="true">
         {WEEKDAY_NAMES.map((w) => (
-          <div className="calendar__weekday" key={w} role="columnheader">
+          <div className="calendar__weekday" key={w}>
             {w}
           </div>
         ))}
       </div>
 
-      <div className="calendar__grid" role="grid" aria-label={`${MONTH_NAMES[month]} ${year}`}>
+      {/* Deliberately NOT role="grid": that pattern requires row/gridcell
+          descendants and two-dimensional arrow-key navigation, none of
+          which is implemented here. A labelled group of buttons is an
+          honest description of what this actually is. */}
+      <div
+        className="calendar__grid"
+        role="group"
+        aria-label={`${MONTH_NAMES[month]} ${year}, select a day to see its events`}
+      >
         {cells.map((day, i) => {
           if (day === null) return <div className="calendar__cell calendar__cell--empty" key={i} aria-hidden="true" />;
           const dayEvents = eventsByDay.get(day) ?? [];
@@ -125,8 +138,10 @@ export default function CalendarClient({
         })}
       </div>
 
+      {/* Announced when a day is picked — otherwise a screen reader user
+          activates a day button and nothing appears to happen. */}
       {selectedDay && (
-        <div className="calendar__detail">
+        <div className="calendar__detail" role="region" aria-live="polite" tabIndex={-1}>
           <h3>
             {MONTH_NAMES[month]} {selectedDay}, {year}
           </h3>
@@ -141,15 +156,20 @@ export default function CalendarClient({
                   <div className="calendar__detail-time">
                     {e.allDay
                       ? "All day"
-                      : new Date(e.startsAt).toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })}
+                      : new Date(e.startsAt).toLocaleTimeString("en-US", {
+                          hour: "numeric",
+                          minute: "2-digit"
+                        })}
                   </div>
                   <div>
                     <p className="calendar__detail-title">
-                      {e.category && <span className="info-card__pin info-card__pin--event">{e.category}</span>} {e.title}
+                      {e.category && <span className="pub-tag pub-tag--event">{e.category}</span>}{" "}
+                      {e.title}
                     </p>
                     {e.location && (
                       <p className="info-card__meta">
-                        <i className="fa-solid fa-location-dot" /> {e.location}
+                        <i className="fa-solid fa-location-dot" aria-hidden="true" />
+                        <span className="sr-only">Location: </span> {e.location}
                       </p>
                     )}
                     {e.description && <p className="calendar__detail-desc">{e.description}</p>}

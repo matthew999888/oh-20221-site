@@ -1,6 +1,6 @@
 "use server";
 
-import { requirePagePermission } from "@/lib/permissions";
+import { requirePagePermission } from "@/lib/permissions-server";
 import { prisma } from "@/lib/prisma";
 import { logActivity } from "@/lib/activity-log";
 import { isValidRank } from "@/lib/promotion-ranks";

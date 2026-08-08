@@ -10,6 +10,10 @@
 
 generator client {
   provider = "prisma-client-js"
+  // driverAdapters lets the client run on Cloudflare Workers via
+  // @prisma/adapter-pg (the default query engine is a native binary and
+  // cannot execute there). See lib/prisma.ts for the runtime branch.
+  previewFeatures = ["driverAdapters"]
 }
 
 datasource db {
@@ -203,6 +207,16 @@ model RosterEntry {
   rank        String?
   positionTitle String?
   active      Boolean  @default(true)
+
+  // FERPA directory-information opt-out (34 CFR § 99.37). A parent or
+  // eligible student may refuse public disclosure of directory info; when
+  // they do, staff set this true and the cadet is excluded from the
+  // PUBLIC roster at /roster while remaining fully visible inside the
+  // authenticated portal. Defaults false because the district's annual
+  // FERPA notice establishes directory disclosure as opt-out, not opt-in
+  // — if the district's notice says otherwise, flip this default.
+  directoryOptOut Boolean @default(false)
+
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -211,6 +225,7 @@ model RosterEntry {
   eventAttendance EventAttendance[]
 
   @@index([active])
+  @@index([active, directoryOptOut])
 }
 
 // ASSUMPTION: OpsOrderStatus = singleton row (fixed id "singleton") holding
