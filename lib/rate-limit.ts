@@ -36,7 +36,27 @@ if (!ratelimitConfigured && process.env.NODE_ENV === "production") {
   );
 }
 
-const redis = ratelimitConfigured ? new Redis({ url: url!, token: token! }) : null;
+/**
+ * Constructed defensively. This module is imported by middleware, which
+ * runs on EVERY request — so anything that throws at module scope here
+ * takes down the entire site, including static pages, with an opaque
+ * 500. A malformed UPSTASH_REDIS_REST_URL is an easy way to do that.
+ * Failing to a null client keeps the fail-open contract instead.
+ */
+const redis = (() => {
+  if (!ratelimitConfigured) return null;
+  try {
+    return new Redis({ url: url!, token: token! });
+  } catch (err) {
+    console.error(
+      "[rate-limit] Could not initialize Upstash client — check that " +
+        "UPSTASH_REDIS_REST_URL is the full https:// REST URL and that " +
+        "UPSTASH_REDIS_REST_TOKEN is the REST token (not the Redis password):",
+      err
+    );
+    return null;
+  }
+})();
 
 /**
  * Policy tiers. Windows are deliberately generous for normal use and
