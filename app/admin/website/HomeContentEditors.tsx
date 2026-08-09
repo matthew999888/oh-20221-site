@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { deleteCommandStaff, saveCommandStaff } from "@/app/dashboard/_actions/questions";
 import {
   clearHomeImage,
   createFaq,
@@ -295,6 +296,130 @@ export function MessagesInbox({ initial }: { initial: AdminMessage[] }) {
           </div>
         </div>
       ))}
+    </div>
+  );
+}
+
+/* ── Command staff (public homepage roster) ──────────────────────── */
+export type AdminStaff = { id: string; rank: string; name: string; role: string; order: number };
+
+export function CommandStaffEditor({ initial }: { initial: AdminStaff[] }) {
+  const [rows, setRows] = useState(initial);
+  const [draft, setDraft] = useState<AdminStaff | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [pending, start] = useTransition();
+
+  function save(d: AdminStaff) {
+    start(async () => {
+      try {
+        const saved = await saveCommandStaff(d.id || null, {
+          rank: d.rank,
+          name: d.name,
+          role: d.role,
+          order: d.order
+        });
+        setRows((r) => (d.id ? r.map((x) => (x.id === d.id ? saved : x)) : [...r, saved]));
+        setDraft(null);
+        setError(null);
+      } catch (e) {
+        setError(e instanceof Error ? e.message : "Could not save.");
+      }
+    });
+  }
+
+  return (
+    <div>
+      <p className="dash-page__subtitle">
+        The command staff list on the public homepage. Ordered by the order number — it is a flat
+        list, so the order implies seniority by convention, not a reporting structure. Leave this
+        empty and the site falls back to its built-in list.
+      </p>
+
+      {rows.map((r) => (
+        <div className="content-block__box" key={r.id}>
+          <strong>
+            {r.rank} {r.name}
+          </strong>
+          <p style={{ opacity: 0.75, fontSize: "0.88rem", margin: "0.3rem 0" }}>
+            {r.role} · order {r.order}
+          </p>
+          <div className="content-block__actions">
+            <button className="btn-small" onClick={() => setDraft(r)} disabled={pending}>
+              Edit
+            </button>
+            <button
+              className="btn-small"
+              disabled={pending}
+              onClick={() =>
+                start(async () => {
+                  await deleteCommandStaff(r.id);
+                  setRows((x) => x.filter((y) => y.id !== r.id));
+                })
+              }
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      ))}
+
+      {draft ? (
+        <div className="content-block__box">
+          <label className="form-label">Rank / title label</label>
+          <input
+            className="form-input"
+            placeholder="C/Col"
+            value={draft.rank}
+            onChange={(e) => setDraft({ ...draft, rank: e.target.value })}
+          />
+          <label className="form-label">Name</label>
+          <input
+            className="form-input"
+            value={draft.name}
+            onChange={(e) => setDraft({ ...draft, name: e.target.value })}
+          />
+          <label className="form-label">Position</label>
+          <input
+            className="form-input"
+            placeholder="Corps Commander"
+            value={draft.role}
+            onChange={(e) => setDraft({ ...draft, role: e.target.value })}
+          />
+          <label className="form-label">Order</label>
+          <input
+            className="form-input"
+            type="number"
+            value={draft.order}
+            onChange={(e) => setDraft({ ...draft, order: parseInt(e.target.value, 10) || 0 })}
+          />
+          {error && (
+            <p role="alert" style={{ color: "#ea5c73", fontSize: "0.85rem" }}>
+              {error}
+            </p>
+          )}
+          <div className="content-block__actions">
+            <button
+              className="btn-small btn-small--primary"
+              onClick={() => save(draft)}
+              disabled={pending}
+            >
+              Save
+            </button>
+            <button className="btn-small" onClick={() => setDraft(null)} disabled={pending}>
+              Cancel
+            </button>
+          </div>
+        </div>
+      ) : (
+        <button
+          className="btn-small btn-small--primary"
+          onClick={() =>
+            setDraft({ id: "", rank: "", name: "", role: "", order: rows.length })
+          }
+        >
+          Add person
+        </button>
+      )}
     </div>
   );
 }

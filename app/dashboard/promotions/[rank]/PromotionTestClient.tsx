@@ -8,10 +8,13 @@ type Question = {
   id: string;
   order: number;
   questionText: string;
-  choiceA: string;
-  choiceB: string;
-  choiceC: string;
-  choiceD: string;
+  type: "multiple_choice" | "short_answer" | "long_answer";
+  points: number;
+  // Null for written-answer questions.
+  choiceA: string | null;
+  choiceB: string | null;
+  choiceC: string | null;
+  choiceD: string | null;
 };
 
 export default function PromotionTestClient({
@@ -30,7 +33,9 @@ export default function PromotionTestClient({
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<{ score: number; total: number } | null>(null);
 
-  const answeredCount = Object.keys(answers).length;
+  // Count only non-blank answers: a textarea that was focused and left
+  // empty still creates a key, which would otherwise read as answered.
+  const answeredCount = Object.values(answers).filter((v) => v.trim() !== "").length;
   const locked = Boolean(nextEligibleAt) && !result;
 
   const nextEligibleLabel = useMemo(() => {
@@ -124,9 +129,28 @@ export default function PromotionTestClient({
             </h2>
           </header>
           <p style={{ marginBottom: "0.75rem", fontWeight: 600, color: "var(--text-100)" }}>{q.questionText}</p>
+
+          {q.type !== "multiple_choice" ? (
+            <>
+              <label className="form-label" htmlFor={`${q.id}-written`}>
+                Your answer
+              </label>
+              <textarea
+                id={`${q.id}-written`}
+                className="form-input"
+                rows={q.type === "long_answer" ? 8 : 3}
+                value={answers[q.id] ?? ""}
+                onChange={(e) => setAnswers((prev) => ({ ...prev, [q.id]: e.target.value }))}
+              />
+              <p style={{ fontSize: "0.8rem", opacity: 0.7, marginTop: "0.4rem" }}>
+                Written answers are graded by staff, so this question is not scored right away.
+              </p>
+            </>
+          ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
             {(["A", "B", "C", "D"] as const).map((letter) => {
               const text = { A: q.choiceA, B: q.choiceB, C: q.choiceC, D: q.choiceD }[letter];
+              if (!text) return null;
               const inputId = `${q.id}-${letter}`;
               return (
                 <label
@@ -161,6 +185,7 @@ export default function PromotionTestClient({
               );
             })}
           </div>
+          )}
         </section>
       ))}
 

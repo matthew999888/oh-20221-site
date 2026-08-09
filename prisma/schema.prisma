@@ -54,6 +54,7 @@ model User {
   promotionTestAttempts PromotionTestAttempt[]
   staffJournalEntries   StaffJournalEntry[]
   staffEvaluations      StaffEvaluation[]
+  dailyQuestionAnswers  DailyQuestionAnswer[]
 
   @@index([status])
 }
@@ -443,23 +444,141 @@ model ContactMessage {
   @@index([handled, createdAt])
 }
 
+// Staff-editable command roster shown on the public homepage. A flat
+// list on purpose: the unit's reporting lines were never specified, so
+// ordering carries no structural claim.
+model CommandStaff {
+  id    String @id @default(cuid())
+  rank  String
+  name  String
+  role  String
+  order Int    @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([order])
+}
+
 // ---------------------------------------------------------------------
 // Promotion test
 // ---------------------------------------------------------------------
 
+enum QuestionType {
+  multiple_choice
+  short_answer
+  long_answer
+}
+
 model PromotionTestQuestion {
-  id            String   @id @default(cuid())
-  rank          Int      @default(1)
-  order         Int
-  questionText  String
-  choiceA       String
-  choiceB       String
-  choiceC       String
-  choiceD       String
-  correctChoice String // "A" | "B" | "C" | "D"
-  createdAt     DateTime @default(now())
+  id           String       @id @default(cuid())
+  rank         Int          @default(1)
+  order        Int
+  questionText String
+  type         QuestionType @default(multiple_choice)
+
+  // Multiple choice. Nullable because short/long answer questions have
+  // no options; the four fixed columns are kept (rather than a JSON
+  // array) so existing rows migrate without transformation.
+  choiceA       String?
+  choiceB       String?
+  choiceC       String?
+  choiceD       String?
+  correctChoice String? // "A" | "B" | "C" | "D"
+
+  // Written answers. `answerKey` is guidance for the human grader, not
+  // something matched automatically — auto-grading free text would fail
+  // on spelling and phrasing and quietly mark correct answers wrong.
+  answerKey String?
+  points    Int    @default(1)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  responses PromotionTestResponse[]
 
   @@index([rank, order])
+}
+
+// One cadet's answer to one question on one attempt. Multiple-choice
+// answers are graded on submit; written answers wait for a grader,
+// which is why `awardedPoints` is nullable.
+model PromotionTestResponse {
+  id         String  @id @default(cuid())
+  attemptId  String
+  questionId String
+
+  selectedChoice String? // multiple choice
+  writtenAnswer  String? // short / long answer
+
+  awardedPoints Int? // null = not yet graded
+  graderNote    String?
+  gradedById    String?
+  gradedAt      DateTime?
+
+  attempt  PromotionTestAttempt  @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  question PromotionTestQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@unique([attemptId, questionId])
+  @@index([questionId])
+}
+
+// ---------------------------------------------------------------------
+// Question of the Day
+// ---------------------------------------------------------------------
+
+// One question per calendar date. Staff queue them ahead of time and
+// the correct one surfaces automatically by date — nothing to switch
+// over manually each morning. `scheduledFor` is a DATE, not a
+// timestamp: "which day is this for" is a calendar question, and
+// storing a timestamp would make the answer depend on the reader's
+// time zone.
+model DailyQuestion {
+  id           String       @id @default(cuid())
+  scheduledFor DateTime     @unique @db.Date
+  questionText String
+  type         QuestionType @default(multiple_choice)
+
+  choiceA       String?
+  choiceB       String?
+  choiceC       String?
+  choiceD       String?
+  correctChoice String?
+
+  answerKey String?
+  points    Int    @default(1)
+
+  createdById String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  answers DailyQuestionAnswer[]
+
+  @@index([scheduledFor])
+}
+
+model DailyQuestionAnswer {
+  id         String @id @default(cuid())
+  questionId String
+  userId     String
+
+  selectedChoice String?
+  writtenAnswer  String?
+
+  awardedPoints Int?
+  graderNote    String?
+  gradedById    String?
+  gradedAt      DateTime?
+
+  submittedAt DateTime @default(now())
+
+  question DailyQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  user     User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // One answer per cadet per question — the daily question is answered
+  // once, not retried.
+  @@unique([questionId, userId])
+  @@index([userId, submittedAt])
 }
 
 model PromotionTestAttempt {
@@ -470,7 +589,8 @@ model PromotionTestAttempt {
   totalQuestions Int
   submittedAt    DateTime @default(now())
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  responses PromotionTestResponse[]
 
   @@index([userId, rank])
   @@index([submittedAt])

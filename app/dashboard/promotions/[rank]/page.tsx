@@ -25,7 +25,20 @@ export default async function PromotionRankTestPage({
     prisma.promotionTestQuestion.findMany({
       where: { rank },
       orderBy: { order: "asc" },
-      select: { id: true, order: true, questionText: true, choiceA: true, choiceB: true, choiceC: true, choiceD: true }
+      // `correctChoice` and `answerKey` are deliberately NOT selected —
+      // they would be visible in the page payload to anyone who opened
+      // devtools. Grading happens server-side in _actions.ts.
+      select: {
+        id: true,
+        order: true,
+        questionText: true,
+        type: true,
+        points: true,
+        choiceA: true,
+        choiceB: true,
+        choiceC: true,
+        choiceD: true
+      }
     }),
     prisma.promotionTestAttempt.findFirst({
       where: { userId: session.user.id, rank },

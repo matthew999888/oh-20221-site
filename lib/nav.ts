@@ -32,11 +32,15 @@ export const NAV_SECTIONS: NavSection[] = [
       { href: "/dashboard/ops-order", label: "Ops Order", icon: "fa-solid fa-clipboard-list", page: "ops-order" },
       { href: "/dashboard/promotions", label: "Promotions", icon: "fa-solid fa-ranking-star", page: "promotions" },
       { href: "/dashboard/promotion-scores", label: "Promotion Scores", icon: "fa-solid fa-chart-column", page: "promotion-scores" },
+      { href: "/dashboard/promotions/manage", label: "Promotion Test Builder", icon: "fa-solid fa-pen-to-square", page: "promotion-tests-admin" },
       { href: "/dashboard/guides", label: "Guides", icon: "fa-solid fa-book-open", page: "guide-links" },
       { href: "/dashboard/cadet-guide", label: "Cadet Guide", icon: "fa-solid fa-graduation-cap", page: "cadet-guide" },
       { href: "/dashboard/events", label: "Event & Hours Tracker", icon: "fa-solid fa-clock", page: "events" },
-      { href: "/gallery", label: "Gallery", icon: "fa-solid fa-images", page: "gallery" },
-      { href: "/calendar", label: "Calendar", icon: "fa-solid fa-calendar-days", page: "calendar" }
+      { href: "/dashboard/question-of-the-day", label: "Question of the Day", icon: "fa-solid fa-circle-question", page: "question-of-the-day" }
+      // Gallery and Calendar were removed from this nav: they are public
+      // pages, already reachable from the site header, and listing them
+      // here implied they were portal tools. Editing still happens under
+      // Admin -> Website.
     ]
   },
   {
@@ -50,6 +54,7 @@ export const NAV_SECTIONS: NavSection[] = [
     label: "Unit Management",
     items: [
       { href: "/dashboard/roster", label: "Cadet Roster", icon: "fa-solid fa-users", page: "roster" },
+      { href: "/dashboard/cadet-scores", label: "Cadet Scores", icon: "fa-solid fa-chart-line", page: "cadet-scores" },
       { href: "/dashboard/personnel", label: "Personnel", icon: "fa-solid fa-id-card", page: "personnel" },
       { href: "/dashboard/inventory", label: "Inventory", icon: "fa-solid fa-boxes-stacked", page: "inventory" }
     ]

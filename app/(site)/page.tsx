@@ -33,12 +33,14 @@ const PILLARS = [
   }
 ];
 
-/* One flat list, not a hierarchy.
-   Earlier versions drew a tree and then tiers, both of which asserted
-   reporting relationships that were never supplied. A single roster
-   states only what is known: who holds which position. Order is
-   seniority by convention, and carries no structural claim. */
-const ROSTER: { rank: string; name: string; role: string }[] = [
+/* Fallback roster, used only when the CommandStaff table is empty so
+   the section is never blank on a fresh database. Once staff add
+   anyone under Admin -> Website -> Command staff, the database wins.
+
+   A flat list on purpose: earlier versions drew a tree and then tiers,
+   both of which asserted reporting relationships that were never
+   supplied. Order carries no structural claim. */
+const FALLBACK_ROSTER: { rank: string; name: string; role: string }[] = [
   { rank: "SASI", name: "Maj Lance Roberts", role: "Senior Aerospace Science Instructor" },
   { rank: "ASI", name: "MSgt Jeffery George", role: "Aerospace Science Instructor" },
   { rank: "C/Col", name: "Kevin Easton", role: "Corps Commander" },
@@ -51,13 +53,15 @@ const ROSTER: { rank: string; name: string; role: string }[] = [
 ];
 
 export default async function HomePage() {
-  const [images, faqs] = await Promise.all([
+  const [images, faqs, staff] = await Promise.all([
     prisma.homeImage.findMany(),
-    prisma.faqItem.findMany({ orderBy: { order: "asc" } })
+    prisma.faqItem.findMany({ orderBy: { order: "asc" } }),
+    prisma.commandStaff.findMany({ orderBy: { order: "asc" } })
   ]);
 
   const imageBySlot = new Map(images.map((i) => [i.slot, i]));
   const corpsPhoto = imageBySlot.get("corps");
+  const roster = staff.length > 0 ? staff : FALLBACK_ROSTER;
 
   return (
     <>
@@ -162,7 +166,7 @@ export default async function HomePage() {
           </div>
 
           <div className="pub-roster">
-            {ROSTER.map((p) => (
+            {roster.map((p) => (
               <div className="pub-person" key={p.name + p.role}>
                 <p className="pub-person__rank">{p.rank}</p>
                 <p className="pub-person__name">{p.name}</p>

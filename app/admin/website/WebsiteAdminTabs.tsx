@@ -7,6 +7,7 @@ type TabKey =
   | "calendar"
   | "gallery"
   | "photos"
+  | "command-staff"
   | "faq"
   | "messages";
 
@@ -15,6 +16,7 @@ export default function WebsiteAdminTabs({
   calendar,
   gallery,
   photos,
+  commandStaff,
   faq,
   messages,
   unreadCount
@@ -23,6 +25,7 @@ export default function WebsiteAdminTabs({
   calendar: ReactNode;
   gallery: ReactNode;
   photos: ReactNode;
+  commandStaff: ReactNode;
   faq: ReactNode;
   messages: ReactNode;
   unreadCount: number;
@@ -34,6 +37,7 @@ export default function WebsiteAdminTabs({
     { key: "calendar", label: "Calendar", icon: "fa-solid fa-calendar-days" },
     { key: "gallery", label: "Gallery", icon: "fa-solid fa-images" },
     { key: "photos", label: "Homepage photos", icon: "fa-solid fa-image" },
+    { key: "command-staff", label: "Command staff", icon: "fa-solid fa-users-line" },
     { key: "faq", label: "FAQ", icon: "fa-solid fa-circle-question" },
     {
       key: "messages",
@@ -84,6 +88,7 @@ export default function WebsiteAdminTabs({
       {tab === "calendar" && calendar}
       {tab === "gallery" && gallery}
       {tab === "photos" && photos}
+      {tab === "command-staff" && commandStaff}
       {tab === "faq" && faq}
       {tab === "messages" && messages}
     </div>

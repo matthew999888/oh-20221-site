@@ -6,12 +6,17 @@ import WebsiteAdminTabs from "./WebsiteAdminTabs";
 import AnnouncementsEditor, { type SiteAnnouncement } from "./AnnouncementsEditor";
 import CalendarEditor, { type SiteCalendarEvent } from "./CalendarEditor";
 import GalleryEditor, { type SiteGallery } from "./GalleryEditor";
-import { FaqEditor, HomePhotosEditor, MessagesInbox } from "./HomeContentEditors";
+import {
+  CommandStaffEditor,
+  FaqEditor,
+  HomePhotosEditor,
+  MessagesInbox
+} from "./HomeContentEditors";
 
 export default async function AdminWebsitePage() {
   await requirePagePermission("website-admin", "view");
 
-  const [announcements, events, galleries, homeImages, faqs, messages] =
+  const [announcements, events, galleries, homeImages, staff, faqs, messages] =
     await Promise.all([
       prisma.announcement.findMany({
         where: { ldrSlug: null },
@@ -23,6 +28,7 @@ export default async function AdminWebsitePage() {
         include: { images: { orderBy: { order: "asc" } } }
       }),
       prisma.homeImage.findMany(),
+      prisma.commandStaff.findMany({ orderBy: { order: "asc" } }),
       prisma.faqItem.findMany({ orderBy: { order: "asc" } }),
       // Unhandled first, newest first within each group.
       prisma.contactMessage.findMany({ orderBy: [{ handled: "asc" }, { createdAt: "desc" }] })
@@ -78,6 +84,7 @@ export default async function AdminWebsitePage() {
             }))}
           />
         }
+        commandStaff={<CommandStaffEditor initial={staff} />}
         faq={
           <FaqEditor
             initial={faqs.map((f) => ({
