@@ -18,7 +18,12 @@ const PUBLIC_PATHS = [
   // policy behind a login is not notice.
   "/privacy",
   "/terms",
-  "/accessibility"
+  "/accessibility",
+  // Health check. Must be reachable anonymously or uptime monitoring
+  // just measures the login redirect. The route itself only returns
+  // `{ok:true}` to anonymous callers — counts and configuration state
+  // are gated to admins inside the handler.
+  "/api/health"
 ];
 // Prefixes that never require auth (covers dynamic sub-routes, e.g. /gallery/[id], /dept/[slug], /ldr/[slug]).
 const PUBLIC_PATH_PREFIXES = ["/gallery/", "/dept/", "/ldr/"];
