@@ -49,40 +49,51 @@
   --font-body: "Inter", system-ui, -apple-system, sans-serif;
   --font-ui: "Inter", system-ui, -apple-system, sans-serif;
 
-  /* ── v3 public-site tokens ─────────────────────────────────────────
-     A deliberate reset away from the previous purple/gradient system.
+  /* ── Public-site tokens ────────────────────────────────────────────
+     Drawn from the sign-in page so the public site and the cadet portal
+     read as one product: --surface-0 is its --bg-body, --accent is its
+     --purple-300, --accent-deep its --purple-600, and the ink ramp its
+     --text-100/200.
 
-     Design rules this palette enforces:
-       - ONE accent (brass). No secondary hue, no gradients as color.
-       - Warm-neutral greys, not blue-tinted — they read as paper and
-         metal rather than as a SaaS dashboard.
-       - Backgrounds are near-black and flat. No orbs, no glows.
+     The palette is the unit's; the DISCIPLINE is what changed. These
+     rules are what stop it looking templated, and matter more than the
+     hues:
+       - ONE accent. Purple only. No second hue as decoration.
+       - No gradients used as color. Gradients exist solely as scrims
+         over photography, where they earn their place.
+       - No orbs, glows, or blurred blobs. Backgrounds are flat.
+       - Structure comes from hairlines and whitespace, not shadows.
 
-     Ratios are measured against --surface-0 (#0c0c0e) and --surface-1
-     (#141416); the lower of the two is quoted. All pass WCAG AA. */
-  --surface-0: #0c0c0e; /* page */
-  --surface-1: #141416; /* raised panels */
-  --surface-2: #1b1b1e; /* table headers, insets */
+     Every value below is contrast-checked against all three surfaces;
+     the worst case is quoted. All pass WCAG AA (4.5:1). */
+  --surface-0: #07091a; /* page — same as the sign-in page */
+  --surface-1: #0e1330; /* raised panels */
+  --surface-2: #141a3a; /* table headers, insets */
 
-  --ink-strong: #f6f4f1; /* 17.8:1 — headlines */
-  --ink: #ddd8d0; /* 13.5:1 — body */
-  --ink-muted: #a9a299; /*  7.4:1 — secondary */
-  --ink-faint: #8f8880; /*  4.9:1 on --surface-2, the worst case; do not darken */
+  --ink-strong: #f0f2f8; /* 15.1:1 — headlines */
+  --ink: #c8cdd6; /* 10.6:1 — body */
+  --ink-muted: #9ba5bd; /*  6.9:1 — secondary */
+  --ink-faint: #8791a8; /*  5.4:1 — labels; do not darken */
 
-  /* Brass. Used for small marks, rules, and links — never as a fill
-     behind light text, and never as a gradient. */
-  --accent: #d3a75f; /*  8.9:1 on --surface-0 */
-  --accent-deep: #b8863a; /* fills, with --accent-ink on top */
-  --accent-ink: #12100c; /* 8.4:1 on --accent-deep */
+  /* Purple, used for small marks, rules, and links. Never as a fill
+     behind light text, never as a gradient. */
+  --accent: #aa83db; /*  5.6:1 — the sign-in page's --purple-300 */
+  --accent-deep: #5b2d9e; /* fills; white on it is 9.1:1 */
+  --accent-ink: #ffffff;
+
+  /* Ohio red, reserved for genuinely semantic emphasis (pinned items).
+     Lightened from the brand #c41e3a, which is only 3.8:1 here and
+     fails AA as text. */
+  --flag-red: #ea5c73; /*  5.1:1 */
 
   /* Hairlines carry the structure in place of shadows. */
-  --line: rgba(246, 244, 241, 0.11);
-  --line-strong: rgba(246, 244, 241, 0.22);
+  --line: rgba(170, 131, 219, 0.15);
+  --line-strong: rgba(170, 131, 219, 0.3);
 
-  --focus-ring: #e3bd7c;
+  --focus-ring: #c4a8f0;
   --focus-ring-offset: var(--surface-0);
 
-  /* Legacy aliases — the cadet portal still references these. */
+  /* Legacy alias — the cadet portal still references this. */
   --accent-strong: var(--accent-deep);
 
   /* Fluid type scale */

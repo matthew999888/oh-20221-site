@@ -5,7 +5,7 @@
    are constraints, not suggestions — breaking one is what made the old
    version look templated.
 
-     1. ONE accent (brass). No second hue anywhere.
+     1. ONE accent (purple, taken from the sign-in page). No second hue.
      2. No gradients used as color. Gradients exist only as scrims over
         photography, where they do real work.
      3. No blurred orbs, glows, or decorative blobs.
@@ -224,14 +224,14 @@
   border-bottom: 1px solid var(--line);
 }
 
-/* The 16:9 media plane. Flat near-black when no video is present — a
-   plain dark field reads as intentional; a purple gradient reads as
+/* The 16:9 media plane. Flat deep navy when no video is present — a
+   plain dark field reads as intentional; a glowing gradient reads as
    filler. */
 .pub-hero__media {
   position: absolute;
   inset: 0;
   z-index: -2;
-  background: #08080a;
+  background: #05060f;
 }
 .pub-hero__video {
   width: 100%;
@@ -249,12 +249,12 @@
   pointer-events: none;
   background: linear-gradient(
       100deg,
-      rgba(8, 8, 10, 0.94) 0%,
-      rgba(8, 8, 10, 0.82) 32%,
-      rgba(8, 8, 10, 0.42) 62%,
-      rgba(8, 8, 10, 0.28) 100%
+      rgba(5, 6, 15, 0.94) 0%,
+      rgba(5, 6, 15, 0.82) 32%,
+      rgba(5, 6, 15, 0.42) 62%,
+      rgba(5, 6, 15, 0.28) 100%
     ),
-    linear-gradient(to top, rgba(8, 8, 10, 0.7) 0%, transparent 32%);
+    linear-gradient(to top, rgba(5, 6, 15, 0.7) 0%, transparent 32%);
 }
 
 .pub-hero__inner {
@@ -269,8 +269,8 @@
 .pub-hero__panel {
   max-width: 40rem;
   padding: clamp(2rem, 4vw, 3.25rem);
-  border: 1px solid rgba(246, 244, 241, 0.16);
-  background: rgba(10, 10, 12, 0.62);
+  border: 1px solid rgba(240, 242, 248, 0.16);
+  background: rgba(7, 9, 26, 0.66);
 }
 
 .pub-eyebrow {
@@ -324,17 +324,17 @@
   height: 44px;
   display: grid;
   place-items: center;
-  border: 1px solid rgba(246, 244, 241, 0.28);
+  border: 1px solid rgba(240, 242, 248, 0.28);
   border-radius: var(--radius-sm);
-  background: rgba(8, 8, 10, 0.6);
+  background: rgba(5, 6, 15, 0.6);
   color: var(--ink-strong);
   font-size: 0.78rem;
   cursor: pointer;
   transition: border-color 0.15s ease, background-color 0.15s ease;
 }
 .pub-hero__transport:hover {
-  border-color: rgba(246, 244, 241, 0.55);
-  background: rgba(8, 8, 10, 0.85);
+  border-color: rgba(240, 242, 248, 0.55);
+  background: rgba(5, 6, 15, 0.85);
 }
 
 /* ── Buttons ───────────────────────────────────────────────────────── */
@@ -363,7 +363,7 @@
 }
 .pub-btn--ghost {
   background: transparent;
-  border-color: rgba(246, 244, 241, 0.3);
+  border-color: rgba(240, 242, 248, 0.3);
   color: var(--ink-strong);
 }
 .pub-btn--ghost:hover {
@@ -594,8 +594,10 @@ a.pub-card:hover {
   text-transform: uppercase;
   color: var(--ink-faint);
 }
+/* The one place a second color earns its keep: "pinned" is semantic
+   emphasis, not decoration. Uses the AA-safe Ohio red. */
 .pub-tag--pinned {
-  color: var(--accent);
+  color: var(--flag-red);
 }
 .pub-tag--event,
 .pub-tag--neutral {
@@ -738,7 +740,7 @@ a.pub-card:hover {
   inset-inline: 0;
   bottom: 0;
   padding: 3rem 1.25rem 1.1rem;
-  background: linear-gradient(to top, rgba(8, 8, 10, 0.92), transparent);
+  background: linear-gradient(to top, rgba(5, 6, 15, 0.92), transparent);
   font-size: 0.92rem;
   font-weight: 500;
   color: var(--ink-strong);
