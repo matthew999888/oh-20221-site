@@ -30,7 +30,7 @@
 
   // ── Optional: only if you deploy to Workers instead of Vercel ──────
   // "routes": [
-  //   { "pattern": "loganjrotc.org", "custom_domain": true }
+  //   { "pattern": "www.loganjrotc.org", "custom_domain": true }
   // ],
 
   // ── Optional: R2 bucket for the incremental cache ──────────────────

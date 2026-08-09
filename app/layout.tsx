@@ -2,7 +2,11 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Providers from "./providers";
 
-const SITE_URL = "https://loganjrotc.org";
+// Canonical origin, used for metadataBase and Open Graph URLs. Must match
+// the domain Vercel serves as primary — if these disagree, share cards and
+// canonical tags point at the non-canonical host and get deduplicated away
+// by search engines. Override with NEXT_PUBLIC_SITE_URL (no trailing slash).
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.loganjrotc.org";
 
 export const metadata: Metadata = {
   // Required for social/share cards: Next resolves relative image and

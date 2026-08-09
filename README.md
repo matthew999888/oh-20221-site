@@ -373,7 +373,8 @@ Production (and Preview, if previews should hit the same database):
 |---|---|
 | `DATABASE_URL` | Supabase **pooled** string (Transaction mode, port 6543) |
 | `DIRECT_URL` | Supabase **direct** string (port 5432) — migrations only |
-| `NEXTAUTH_URL` | `https://loganjrotc.org` — the canonical domain, no trailing slash |
+| `NEXTAUTH_URL` | `https://www.loganjrotc.org` — must match Vercel's **primary** domain exactly, no trailing slash |
+| `NEXT_PUBLIC_SITE_URL` | `https://www.loganjrotc.org` — canonical origin for share cards *(optional; defaults to this)* |
 | `NEXTAUTH_SECRET` | `openssl rand -base64 32` — **generate a fresh one**, don't reuse dev |
 | `UPSTASH_REDIS_REST_URL` | From the Upstash console |
 | `UPSTASH_REDIS_REST_TOKEN` | From the Upstash console |
