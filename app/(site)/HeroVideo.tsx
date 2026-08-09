@@ -5,74 +5,100 @@ import { useEffect, useRef, useState } from "react";
 /* =====================================================================
    Hero background video
    ---------------------------------------------------------------------
-   DROP YOUR VIDEO IN HERE — no code changes needed:
+   To replace the footage, overwrite these files — no code change:
 
-     public/media/hero.mp4      H.264/AAC, 16:9, required
-     public/media/hero.webm     VP9, 16:9, optional but recommended
-     public/media/hero-poster.jpg   16:9 still, shown before/instead
-                                    of the video
+     public/media/hero.mp4          H.264, 16:9
+     public/media/hero-poster.jpg   16:9 still
 
-   Until those files exist the hero falls back to the gradient plane in
-   `.pub-hero__media`, so the page looks intentional rather than broken.
+   See public/media/README.md for the ffmpeg commands used, and for why
+   there is deliberately no WebM.
 
-   Encoding notes for a background loop:
-     - 16:9, 1920x1080 is plenty; 2560x1440 if the footage is detailed.
-     - Target 6-10s and cut on a matching frame so the loop is seamless.
-     - No audio track at all (smaller file, and it can never unmute).
-     - Aim under ~4 MB; this autoplays for every first-time visitor.
-     - Keep the subject centered — the video is `object-fit: cover`, so
-       the left/right edges crop away on narrow viewports.
-       ffmpeg -i in.mov -an -c:v libx264 -crf 26 -vf scale=1920:-2 \
-         -movflags +faststart public/media/hero.mp4
+   LOADING STRATEGY
+   ----------------
+   The current file is 18 MB. That buys visually transparent quality on
+   footage full of hard cuts, which is expensive to compress — at 5 MB
+   the uniforms broke into visible blocking. Rather than trade the
+   quality back, the cost is managed by never making anyone wait for it:
+
+     1. The poster (~220 KB) renders immediately as a CSS background,
+        so the hero is complete on first paint.
+     2. `preload="none"` means the browser fetches nothing until asked.
+     3. The source is attached only after `load`, so the video never
+        competes with page content for bandwidth.
+     4. Visitors on a metered or slow connection, or with "reduce
+        motion" set, keep the poster and never download the video.
+
+   The result: the page costs ~220 KB whatever happens, and the video is
+   a progressive enhancement for connections that can absorb it.
 ===================================================================== */
 
-/* MP4 only, deliberately. A VP9/WebM encode of this footage came out
-   larger than the H.264 (12.9 MB vs 5.1 MB), and because <source> is
-   evaluated in order, offering it first would make VP9-capable browsers
-   download the heavier file. Re-add a WebM only if it actually beats
-   the MP4 on size. */
-const SOURCES = [{ src: "/media/hero.mp4", type: "video/mp4" }];
+const VIDEO_SRC = "/media/hero.mp4";
 const POSTER = "/media/hero-poster.jpg";
+
+type Connection = { saveData?: boolean; effectiveType?: string };
+
+/** True when downloading 18 MB of decoration would be inconsiderate. */
+function shouldSkipVideo(): boolean {
+  if (typeof window === "undefined") return true;
+
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return true;
+
+  const conn = (navigator as Navigator & { connection?: Connection }).connection;
+  if (conn?.saveData) return true;
+  if (conn?.effectiveType && /(^|-)(2g|3g)$/.test(conn.effectiveType)) return true;
+
+  return false;
+}
 
 export default function HeroVideo() {
   const videoRef = useRef<HTMLVideoElement>(null);
-  // `null` = we don't yet know whether a video file exists. The transport
-  // control stays hidden until a frame decodes, so the button never
-  // appears over a still gradient with nothing to pause.
-  const [hasVideo, setHasVideo] = useState<boolean | null>(null);
+  const [src, setSrc] = useState<string | null>(null);
   const [playing, setPlaying] = useState(false);
 
+  // Attach the source only once the page has finished loading, and only
+  // if this connection should have it at all.
   useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
+    if (shouldSkipVideo()) return;
 
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-
-    const applyMotionPreference = () => {
-      if (reduceMotion.matches) {
-        // Respect the OS setting: hold on the first frame instead of
-        // looping. The user can still start it from the transport button.
-        video.pause();
-        setPlaying(false);
-      } else {
-        // `autoPlay` covers most cases, but Safari/iOS can reject the
-        // initial attempt; retrying here catches that. A rejected promise
-        // is expected (e.g. battery saver) and must not throw.
-        void video.play().then(
-          () => setPlaying(true),
-          () => setPlaying(false)
-        );
-      }
+    let cancelled = false;
+    const start = () => {
+      if (!cancelled) setSrc(VIDEO_SRC);
     };
 
-    applyMotionPreference();
-    reduceMotion.addEventListener("change", applyMotionPreference);
-    return () => reduceMotion.removeEventListener("change", applyMotionPreference);
-  }, [hasVideo]);
+    if (document.readyState === "complete") {
+      start();
+    } else {
+      window.addEventListener("load", start, { once: true });
+      return () => {
+        cancelled = true;
+        window.removeEventListener("load", start);
+      };
+    }
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // Autoplay once a source exists. `autoPlay` alone is unreliable when
+  // src is attached after mount, and Safari can reject the first
+  // attempt — a rejected promise is expected and must not throw.
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || !src) return;
+    void video.play().then(
+      () => setPlaying(true),
+      () => setPlaying(false)
+    );
+  }, [src]);
 
   const toggle = () => {
     const video = videoRef.current;
     if (!video) return;
+    // Lets someone who was skipped by the heuristics opt in deliberately.
+    if (!src) {
+      setSrc(VIDEO_SRC);
+      return;
+    }
     if (video.paused) {
       void video.play().then(
         () => setPlaying(true),
@@ -86,42 +112,47 @@ export default function HeroVideo() {
 
   return (
     <>
-      <div className="pub-hero__media">
+      {/* The poster is a background image rather than the <video
+          poster> attribute, so it paints even before the element has a
+          source — and remains the backdrop if the video never loads. */}
+      <div
+        className="pub-hero__media"
+        style={{
+          backgroundImage: `url(${POSTER})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center"
+        }}
+      >
         <video
           ref={videoRef}
           className="pub-hero__video"
-          // Decorative background footage: it carries no information the
-          // surrounding copy doesn't, so it's hidden from assistive tech
-          // and taken out of the tab order.
+          // Decorative: it carries nothing the surrounding copy does
+          // not, so it is hidden from assistive tech and the tab order.
           aria-hidden="true"
           tabIndex={-1}
-          autoPlay
           muted
           loop
           playsInline
-          preload="metadata"
+          preload="none"
           poster={POSTER}
-          onLoadedData={() => setHasVideo(true)}
-          onError={() => setHasVideo(false)}
+          src={src ?? undefined}
           onPlay={() => setPlaying(true)}
           onPause={() => setPlaying(false)}
-        >
-          {SOURCES.map((s) => (
-            <source key={s.src} src={s.src} type={s.type} />
-          ))}
-        </video>
+          style={{ opacity: playing ? 1 : 0, transition: "opacity 700ms ease" }}
+        />
       </div>
 
       <div className="pub-hero__scrim" aria-hidden="true" />
 
-      {hasVideo && (
-        <button type="button" className="pub-hero__transport" onClick={toggle}>
-          <i className={`fa-solid ${playing ? "fa-pause" : "fa-play"}`} aria-hidden="true" />
-          <span className="sr-only">
-            {playing ? "Pause background video" : "Play background video"}
-          </span>
-        </button>
-      )}
+      {/* Required for motion that autoplays and runs past 5s
+          (WCAG 2.2.2). Also the opt-in for anyone the loading
+          heuristics skipped. */}
+      <button type="button" className="pub-hero__transport" onClick={toggle}>
+        <i className={`fa-solid ${playing ? "fa-pause" : "fa-play"}`} aria-hidden="true" />
+        <span className="sr-only">
+          {playing ? "Pause background video" : "Play background video"}
+        </span>
+      </button>
     </>
   );
 }
