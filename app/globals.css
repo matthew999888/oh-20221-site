@@ -42,31 +42,48 @@
   --status-success: #1e7a4a;
   --status-error: #8a1a1a;
 
-  --font-display: "Oswald", "Arial Narrow", Arial, sans-serif;
+  /* Display is a serif on purpose. Condensed all-caps sans is both the
+     stock "military template" look and a hallmark of generated design;
+     an editorial serif in sentence case reads as considered. */
+  --font-display: "Newsreader", Georgia, "Times New Roman", serif;
   --font-body: "Inter", system-ui, -apple-system, sans-serif;
-  --font-ui: "Rajdhani", "Arial Narrow", Arial, sans-serif;
+  --font-ui: "Inter", system-ui, -apple-system, sans-serif;
 
-  /* ── v2 public-site tokens ─────────────────────────────────────────
-     Text colors below are contrast-checked against --bg-body (#07091a)
-     and --bg-card (#111835) for WCAG 2.1 AA (4.5:1 body, 3:1 large).
-     Do not darken --ink-muted further without re-checking. */
-  /* Ratios measured against --bg-body / --bg-card / table header #131a3c.
-     The lowest of the three is shown; all four pass AA (4.5:1) on all
-     three surfaces. Re-measure if you change any background. */
-  --ink-strong: #f4f6fb; /* 15.7:1 */
-  --ink: #d7dced; /* 12.4:1 */
-  --ink-muted: #a2accb; /*  7.5:1 */
-  --ink-faint: #7d88a6; /*  4.8:1 — the AA floor; do not darken */
+  /* ── v3 public-site tokens ─────────────────────────────────────────
+     A deliberate reset away from the previous purple/gradient system.
 
-  --accent: #a689e8; /*  5.9:1 — links/eyebrows */
-  --accent-strong: #5b2d9e; /* fills only, never text on dark */
-  --accent-ink: #ffffff; /* text on --accent-strong fills */
+     Design rules this palette enforces:
+       - ONE accent (brass). No secondary hue, no gradients as color.
+       - Warm-neutral greys, not blue-tinted — they read as paper and
+         metal rather than as a SaaS dashboard.
+       - Backgrounds are near-black and flat. No orbs, no glows.
 
-  --line: rgba(150, 128, 210, 0.16);
-  --line-strong: rgba(150, 128, 210, 0.34);
+     Ratios are measured against --surface-0 (#0c0c0e) and --surface-1
+     (#141416); the lower of the two is quoted. All pass WCAG AA. */
+  --surface-0: #0c0c0e; /* page */
+  --surface-1: #141416; /* raised panels */
+  --surface-2: #1b1b1e; /* table headers, insets */
 
-  --focus-ring: #b9a1f5;
-  --focus-ring-offset: var(--bg-body);
+  --ink-strong: #f6f4f1; /* 17.8:1 — headlines */
+  --ink: #ddd8d0; /* 13.5:1 — body */
+  --ink-muted: #a9a299; /*  7.4:1 — secondary */
+  --ink-faint: #8f8880; /*  4.9:1 on --surface-2, the worst case; do not darken */
+
+  /* Brass. Used for small marks, rules, and links — never as a fill
+     behind light text, and never as a gradient. */
+  --accent: #d3a75f; /*  8.9:1 on --surface-0 */
+  --accent-deep: #b8863a; /* fills, with --accent-ink on top */
+  --accent-ink: #12100c; /* 8.4:1 on --accent-deep */
+
+  /* Hairlines carry the structure in place of shadows. */
+  --line: rgba(246, 244, 241, 0.11);
+  --line-strong: rgba(246, 244, 241, 0.22);
+
+  --focus-ring: #e3bd7c;
+  --focus-ring-offset: var(--surface-0);
+
+  /* Legacy aliases — the cadet portal still references these. */
+  --accent-strong: var(--accent-deep);
 
   /* Fluid type scale */
   --step--1: clamp(0.8rem, 0.77rem + 0.15vw, 0.875rem);
@@ -88,13 +105,17 @@
   --sp-8: 4.5rem;
   --sp-9: 6.5rem;
 
-  --radius-sm: 8px;
-  --radius: 14px;
-  --radius-lg: 22px;
+  /* Near-square. Large radii are the single loudest "generated UI"
+     signal; structure comes from hairlines instead. */
+  --radius-sm: 2px;
+  --radius: 3px;
+  --radius-lg: 4px;
 
-  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4);
-  --shadow-2: 0 8px 24px -8px rgba(0, 0, 0, 0.55);
-  --shadow-3: 0 24px 64px -20px rgba(0, 0, 0, 0.7);
+  /* Shadows are for genuinely floating things only (menus, modals) —
+     never for decorating a static card. */
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --shadow-2: 0 10px 30px -12px rgba(0, 0, 0, 0.7);
+  --shadow-3: 0 30px 70px -24px rgba(0, 0, 0, 0.85);
 
   --wrap: 1180px;
   --wrap-narrow: 760px;

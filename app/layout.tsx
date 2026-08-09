@@ -40,9 +40,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="color-scheme" content="dark" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        {/* Newsreader carries the display voice: an editorial serif with
+            real optical sizing, which reads as considered rather than as
+            the condensed all-caps "military template" look. Inter stays
+            for UI and body. Oswald and Rajdhani were dropped. */}
         <link
           rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Inter:wght@400;500;600&family=Rajdhani:wght@600;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..500&family=Inter:wght@400;500;600;700&display=swap"
         />
         <link
           rel="stylesheet"

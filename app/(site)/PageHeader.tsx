@@ -41,7 +41,7 @@ export default function PageHeader({
           </ol>
         </nav>
 
-        {eyebrow && <p className="pub-eyebrow">{eyebrow}</p>}
+        {eyebrow && <span className="pub-eyebrow">{eyebrow}</span>}
         <h1 className="pub-pagehead__title">{title}</h1>
         {lede && <p className="pub-lede">{lede}</p>}
       </div>

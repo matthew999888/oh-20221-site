@@ -101,8 +101,20 @@ function describe(name, value) {
 async function tryConnect(label, connectionString) {
   if (!connectionString) return;
   const { default: pg } = await import("pg");
+
+  // Pass the parts explicitly rather than the raw string. Newer
+  // pg-connection-string promotes `sslmode=require` to `verify-full`,
+  // which then rejects Supabase's chain with "self-signed certificate"
+  // and overrides the ssl option below — producing a scary failure for
+  // a connection string that is actually fine. Prisma does not behave
+  // this way, so the raw string is correct to use in DATABASE_URL.
+  const u = new URL(connectionString);
   const client = new pg.Client({
-    connectionString,
+    host: u.hostname,
+    port: Number(u.port) || 5432,
+    database: u.pathname.replace(/^\//, "") || "postgres",
+    user: decodeURIComponent(u.username),
+    password: decodeURIComponent(u.password),
     ssl: { rejectUnauthorized: false },
     connectionTimeoutMillis: 15000
   });

@@ -12,19 +12,19 @@ export const metadata: Metadata = {
     "OH-20221 Air Force Junior ROTC at Logan High School — building better citizens through leadership, service, and discipline."
 };
 
+// No icons. A decorative glyph in a tinted rounded box adds nothing the
+// heading doesn't already say, and is one of the clearest tells of a
+// generated layout. The numeral carries the same visual anchor.
 const PILLARS = [
   {
-    icon: "fa-star",
     title: "Leadership",
     body: "Cadets take on real command responsibilities from day one. Through a structured rank system and officer positions, every cadet learns to lead, delegate, and inspire those around them."
   },
   {
-    icon: "fa-hands-holding-circle",
     title: "Service",
     body: "OH-20221 cadets complete hundreds of community service hours annually — from local parades and memorial ceremonies to food drives and school events across Hocking County."
   },
   {
-    icon: "fa-shield-halved",
     title: "Discipline",
     body: "From drill formations to uniform inspections, our program instills the personal discipline and attention to detail that follows cadets into college, careers, and every aspect of adult life."
   }
@@ -105,23 +105,26 @@ export default async function HomePage() {
         <HeroVideo />
 
         <div className="pub-hero__inner">
-          <p className="pub-hero__eyebrow">Air Force Junior ROTC · Logan, Ohio</p>
-          <h1 className="pub-hero__title" id="hero-heading">
-            Building <em>Better</em> Citizens
-          </h1>
-          <hr className="pub-hero__rule" />
-          <p className="pub-hero__lede">
-            Unit OH-20221 develops leadership, character, and a sense of service at Logan High
-            School — one cadet at a time.
-          </p>
-          <div className="pub-hero__actions">
-            <Link href="/announcements" className="pub-btn pub-btn--primary">
-              Latest Announcements
-            </Link>
-            <Link href="/login" className="pub-btn pub-btn--ghost">
-              <i className="fa-solid fa-arrow-right-to-bracket" aria-hidden="true" />
-              Cadet Login
-            </Link>
+          {/* One bordered panel over the footage, left-weighted. The
+              scrim behind it is what guarantees contrast once real
+              video is dropped in. */}
+          <div className="pub-hero__panel">
+            <span className="pub-eyebrow">Air Force Junior ROTC &middot; Unit OH-20221</span>
+            <h1 className="pub-hero__title" id="hero-heading">
+              Building <em>better</em> citizens, one cadet at a time.
+            </h1>
+            <p className="pub-hero__lede">
+              A leadership and citizenship program at Logan High School, developing character,
+              discipline, and a habit of service since 2020.
+            </p>
+            <div className="pub-hero__actions">
+              <Link href="/announcements" className="pub-btn pub-btn--primary">
+                Latest announcements
+              </Link>
+              <Link href="/login" className="pub-btn pub-btn--ghost">
+                Cadet login
+              </Link>
+            </div>
           </div>
         </div>
       </section>
@@ -145,9 +148,9 @@ export default async function HomePage() {
             <p className="pub-stat__label">Leadership Development Requirements</p>
           </div>
           <div className="pub-stat">
-            <p className="pub-stat__n">
-              <i className="fa-solid fa-award" aria-hidden="true" />
-            </p>
+            {/* Was an award icon. A word carries more than a glyph and
+                keeps the row typographically consistent. */}
+            <p className="pub-stat__n">DUwM</p>
             <p className="pub-stat__label">Distinguished Unit with Merit</p>
           </div>
         </div>
@@ -155,24 +158,26 @@ export default async function HomePage() {
 
       <section className="pub-section" aria-labelledby="pillars-heading">
         <div className="pub-wrap">
-          <div className="pub-sectionhead pub-sectionhead--center">
-            <p className="pub-eyebrow">About AFJROTC</p>
-            <h2 className="pub-h2" id="pillars-heading">
-              More Than a <em>Program</em>
-            </h2>
-            <p className="pub-lede">
-              AFJROTC develops citizens of character dedicated to serving their nation and
-              community. OH-20221 has been shaping leaders at Logan High School since day one.
+          <div className="pub-sectionhead">
+            <p className="pub-sectionhead__label">
+              <span className="pub-num">01</span>About the program
             </p>
+            <div>
+              <h2 className="pub-h2" id="pillars-heading">
+                More than a class on a schedule.
+              </h2>
+              <p className="pub-lede">
+                AFJROTC develops citizens of character dedicated to serving their nation and
+                community. OH-20221 has been shaping leaders at Logan High School since day one.
+              </p>
+            </div>
           </div>
 
           <div className="pub-grid">
-            {PILLARS.map((p) => (
-              <article className="pub-card pub-pillar" key={p.title}>
-                <span className="pub-card__icon" aria-hidden="true">
-                  <i className={`fa-solid ${p.icon}`} />
-                </span>
-                <h3 className="pub-pillar__title">{p.title}</h3>
+            {PILLARS.map((p, i) => (
+              <article className="pub-card" key={p.title}>
+                <span className="pub-card__index">{String(i + 1).padStart(2, "0")}</span>
+                <h3 className="pub-card__title">{p.title}</h3>
                 <p className="pub-card__body">{p.body}</p>
               </article>
             ))}
@@ -180,29 +185,32 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="pub-section pub-section--alt" aria-labelledby="chain-heading">
+      <section className="pub-section pub-section--rule" aria-labelledby="chain-heading">
         <div className="pub-wrap">
           <div className="pub-sectionhead">
-            <p className="pub-eyebrow">School Year 2025–2026</p>
-            <h2 className="pub-h2" id="chain-heading">
-              Chain of <em>Command</em>
-            </h2>
-            <p className="pub-lede">
-              The organizational structure of OH-20221. All cadet positions are appointed annually
-              based on merit, performance, and leadership potential.
+            <p className="pub-sectionhead__label">
+              <span className="pub-num">02</span>School year 2025&ndash;26
             </p>
+            <div>
+              <h2 className="pub-h2" id="chain-heading">
+                Chain of command.
+              </h2>
+              <p className="pub-lede">
+                All cadet positions are appointed annually on merit, performance, and leadership
+                potential.
+              </p>
+            </div>
           </div>
 
+          {/* A roster reads as a list, not as a grid of boxes — each tier
+              is a labelled row separated by a rule. */}
           <div className="pub-chain">
             {CHAIN.map((tier) => (
-              <div key={tier.label}>
+              <div className="pub-chain__tier" key={tier.label}>
                 <h3 className="pub-chain__label">{tier.label}</h3>
-                <div className="pub-chain__tier">
+                <div className="pub-chain__people">
                   {tier.people.map((person) => (
-                    <div
-                      className={`pub-person ${person.command ? "pub-person--command" : ""}`}
-                      key={person.name}
-                    >
+                    <div key={person.name}>
                       <p className="pub-person__rank">{person.rank}</p>
                       <p className="pub-person__name">{person.name}</p>
                       <p className="pub-person__role">{person.role}</p>
@@ -215,26 +223,25 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="pub-section" aria-labelledby="instructors-heading">
+      <section className="pub-section pub-section--rule" aria-labelledby="instructors-heading">
         <div className="pub-wrap">
           <div className="pub-sectionhead">
-            <p className="pub-eyebrow">Unit Leadership</p>
-            <h2 className="pub-h2" id="instructors-heading">
-              Meet Our <em>Instructors</em>
-            </h2>
+            <p className="pub-sectionhead__label">
+              <span className="pub-num">03</span>Unit leadership
+            </p>
+            <div>
+              <h2 className="pub-h2" id="instructors-heading">
+                The instructors.
+              </h2>
+            </div>
           </div>
 
           <div className="pub-grid pub-grid--2">
             {INSTRUCTORS.map((i) => (
               <article className="pub-instructor" key={i.name}>
-                <div className="pub-instructor__top">
-                  <span className="pub-instructor__avatar" aria-hidden="true">
-                    {i.initials}
-                  </span>
-                  <div>
-                    <h3 className="pub-instructor__name">{i.name}</h3>
-                    <p className="pub-instructor__role">{i.role}</p>
-                  </div>
+                <div>
+                  <h3 className="pub-instructor__name">{i.name}</h3>
+                  <p className="pub-instructor__role">{i.role}</p>
                 </div>
                 <p className="pub-instructor__bio">{i.bio}</p>
               </article>
@@ -243,19 +250,20 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="pub-section pub-section--alt" aria-labelledby="announcements-heading">
+      <section className="pub-section pub-section--rule" aria-labelledby="announcements-heading">
         <div className="pub-wrap">
-          <div className="pub-sectionhead pub-sectionhead--row">
-            <div>
-              <p className="pub-eyebrow">Unit News</p>
+          <div className="pub-sectionhead">
+            <p className="pub-sectionhead__label">
+              <span className="pub-num">04</span>Unit news
+            </p>
+            <div className="pub-sectionhead__aside">
               <h2 className="pub-h2" id="announcements-heading">
-                Announcements
+                Announcements.
               </h2>
+              <Link href="/announcements" className="pub-viewall">
+                View all &rarr;
+              </Link>
             </div>
-            <Link href="/announcements" className="pub-viewall">
-              View all announcements
-              <i className="fa-solid fa-arrow-right" aria-hidden="true" />
-            </Link>
           </div>
 
           {announcements.length === 0 ? (
@@ -264,12 +272,7 @@ export default async function HomePage() {
             <div className="pub-grid">
               {announcements.map((a) => (
                 <article className="pub-card" key={a.id}>
-                  {a.pinned && (
-                    <span className="pub-tag pub-tag--pinned">
-                      <i className="fa-solid fa-thumbtack" aria-hidden="true" />
-                      Pinned
-                    </span>
-                  )}
+                  {a.pinned && <span className="pub-tag pub-tag--pinned">Pinned</span>}
                   <h3 className="pub-card__title">{a.title}</h3>
                   <p className="pub-card__body">
                     {a.body.length > 170 ? `${a.body.slice(0, 170).trimEnd()}…` : a.body}
@@ -290,19 +293,20 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="pub-section" aria-labelledby="events-heading">
+      <section className="pub-section pub-section--rule" aria-labelledby="events-heading">
         <div className="pub-wrap">
-          <div className="pub-sectionhead pub-sectionhead--row">
-            <div>
-              <p className="pub-eyebrow">What&rsquo;s Next</p>
+          <div className="pub-sectionhead">
+            <p className="pub-sectionhead__label">
+              <span className="pub-num">05</span>What&rsquo;s next
+            </p>
+            <div className="pub-sectionhead__aside">
               <h2 className="pub-h2" id="events-heading">
-                Upcoming Events
+                Upcoming events.
               </h2>
+              <Link href="/calendar" className="pub-viewall">
+                Full calendar &rarr;
+              </Link>
             </div>
-            <Link href="/calendar" className="pub-viewall">
-              Full calendar
-              <i className="fa-solid fa-arrow-right" aria-hidden="true" />
-            </Link>
           </div>
 
           {events.length === 0 ? (
@@ -311,14 +315,10 @@ export default async function HomePage() {
             <div className="pub-grid">
               {events.map((e) => (
                 <article className="pub-card" key={e.id}>
-                  <span className="pub-tag pub-tag--event">
-                    <i className="fa-solid fa-calendar-day" aria-hidden="true" />
-                    {e.category ?? "Event"}
-                  </span>
+                  <span className="pub-tag pub-tag--event">{e.category ?? "Event"}</span>
                   <h3 className="pub-card__title">{e.title}</h3>
                   {e.location && (
                     <p className="pub-card__body">
-                      <i className="fa-solid fa-location-dot" aria-hidden="true" />{" "}
                       <span className="sr-only">Location: </span>
                       {e.location}
                     </p>
@@ -344,19 +344,20 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="pub-section pub-section--alt" aria-labelledby="gallery-heading">
+      <section className="pub-section pub-section--rule" aria-labelledby="gallery-heading">
         <div className="pub-wrap">
-          <div className="pub-sectionhead pub-sectionhead--row">
-            <div>
-              <p className="pub-eyebrow">In Pictures</p>
+          <div className="pub-sectionhead">
+            <p className="pub-sectionhead__label">
+              <span className="pub-num">06</span>In pictures
+            </p>
+            <div className="pub-sectionhead__aside">
               <h2 className="pub-h2" id="gallery-heading">
-                Gallery
+                From the field.
               </h2>
+              <Link href="/gallery" className="pub-viewall">
+                View all albums &rarr;
+              </Link>
             </div>
-            <Link href="/gallery" className="pub-viewall">
-              View all albums
-              <i className="fa-solid fa-arrow-right" aria-hidden="true" />
-            </Link>
           </div>
 
           {galleries.length === 0 ? (
