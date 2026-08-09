@@ -24,6 +24,7 @@
     "@auth/prisma-adapter": "^2.7.4",
     "@prisma/adapter-pg": "^5.22.0",
     "@prisma/client": "^5.20.0",
+    "@supabase/supabase-js": "^2.112.2",
     "@upstash/ratelimit": "^2.0.8",
     "@upstash/redis": "^1.38.2",
     "bcryptjs": "^2.4.3",
