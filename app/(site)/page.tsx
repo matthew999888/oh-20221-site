@@ -33,24 +33,14 @@ const PILLARS = [
   }
 ];
 
-/* Fallback roster, used only when the CommandStaff table is empty so
-   the section is never blank on a fresh database. Once staff add
-   anyone under Admin -> Website -> Command staff, the database wins.
+/* The command staff roster lives entirely in the database — see
+   Admin -> Website -> Command staff.
 
-   A flat list on purpose: earlier versions drew a tree and then tiers,
-   both of which asserted reporting relationships that were never
-   supplied. Order carries no structural claim. */
-const FALLBACK_ROSTER: { rank: string; name: string; role: string }[] = [
-  { rank: "SASI", name: "Maj Lance Roberts", role: "Senior Aerospace Science Instructor" },
-  { rank: "ASI", name: "MSgt Jeffery George", role: "Aerospace Science Instructor" },
-  { rank: "C/Col", name: "Kevin Easton", role: "Corps Commander" },
-  { rank: "C/Lt Col", name: "Liam Triest", role: "Vice Corps Commander" },
-  { rank: "C/Maj", name: "Tifani Stevens", role: "Executive Officer" },
-  { rank: "Superintendent", name: "Cook", role: "Corps Superintendent" },
-  { rank: "C/Maj", name: "Sowers", role: "Inspector General" },
-  { rank: "C/Maj", name: "Clayton Rice", role: "Director of Operations" },
-  { rank: "C/Maj", name: "Nathaniel Frost", role: "Director of Mission Support" }
-];
+   There is deliberately NO hardcoded fallback. One used to exist so a
+   fresh database was never blank, but it made deletion look broken:
+   removing the last person simply brought the built-in list back, with
+   no way to tell the difference. The table is the only source now, so
+   a delete is a delete. */
 
 export default async function HomePage() {
   const [images, faqs, staff] = await Promise.all([
@@ -61,7 +51,6 @@ export default async function HomePage() {
 
   const imageBySlot = new Map(images.map((i) => [i.slot, i]));
   const corpsPhoto = imageBySlot.get("corps");
-  const roster = staff.length > 0 ? staff : FALLBACK_ROSTER;
 
   return (
     <>
@@ -165,15 +154,22 @@ export default async function HomePage() {
             </div>
           </div>
 
-          <div className="pub-roster">
-            {roster.map((p) => (
-              <div className="pub-person" key={p.name + p.role}>
-                <p className="pub-person__rank">{p.rank}</p>
-                <p className="pub-person__name">{p.name}</p>
-                <p className="pub-person__role">{p.role}</p>
-              </div>
-            ))}
-          </div>
+          {staff.length === 0 ? (
+            <p className="pub-empty">
+              No command staff listed yet. Staff can add people under Admin &rarr; Website &rarr;
+              Command staff.
+            </p>
+          ) : (
+            <div className="pub-roster">
+              {staff.map((p) => (
+                <div className="pub-person" key={p.id}>
+                  <p className="pub-person__rank">{p.rank}</p>
+                  <p className="pub-person__name">{p.name}</p>
+                  <p className="pub-person__role">{p.role}</p>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

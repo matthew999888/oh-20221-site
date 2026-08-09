@@ -27,10 +27,28 @@ export const metadata: Metadata = {
     type: "website",
     siteName: "OH-20221 AFJROTC",
     locale: "en_US",
-    url: SITE_URL
+    url: SITE_URL,
+    // Reuses the hero poster. Without an explicit image, link previews
+    // in Slack, iMessage, and Facebook fall back to whatever the
+    // scraper finds first — usually the badge, cropped badly.
+    images: [
+      {
+        url: "/media/hero-poster.jpg",
+        width: 1920,
+        height: 1080,
+        alt: "Cadets of OH-20221 AFJROTC at Logan High School"
+      }
+    ]
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "OH-20221 AFJROTC | Logan High School",
+    description: "Air Force Junior ROTC at Logan High School, Logan, Ohio.",
+    images: ["/media/hero-poster.jpg"]
   },
   // A public school unit site should be indexable.
-  robots: { index: true, follow: true }
+  robots: { index: true, follow: true },
+  alternates: { canonical: SITE_URL }
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

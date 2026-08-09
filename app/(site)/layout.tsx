@@ -116,9 +116,69 @@ function SiteFooter() {
   );
 }
 
+/**
+ * Structured data describing the unit as an educational organization.
+ *
+ * This is what lets search engines show the address, contact, and
+ * parent school as a knowledge panel rather than guessing from page
+ * text. Scoped to the public site only — the portal has no business
+ * being described to crawlers.
+ */
+function StructuredData() {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.loganjrotc.org";
+  const data = {
+    "@context": "https://schema.org",
+    "@type": "EducationalOrganization",
+    name: "OH-20221 Air Force Junior ROTC",
+    alternateName: "OH-20221 AFJROTC",
+    description:
+      "Air Force Junior ROTC unit OH-20221 at Logan High School — a leadership and citizenship program developing citizens of character dedicated to serving their nation and community.",
+    url: siteUrl,
+    logo: `${siteUrl}/badge.png`,
+    image: `${siteUrl}/media/hero-poster.jpg`,
+    parentOrganization: {
+      "@type": "HighSchool",
+      name: "Logan High School",
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: "14470 State Route 328",
+        addressLocality: "Logan",
+        addressRegion: "OH",
+        postalCode: "43138",
+        addressCountry: "US"
+      }
+    },
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "14470 State Route 328",
+      addressLocality: "Logan",
+      addressRegion: "OH",
+      postalCode: "43138",
+      addressCountry: "US"
+    },
+    contactPoint: {
+      "@type": "ContactPoint",
+      contactType: "Admissions",
+      email: "lroberts@lhsd.k12.oh.us",
+      areaServed: "US",
+      availableLanguage: "English"
+    }
+  };
+
+  return (
+    <script
+      type="application/ld+json"
+      // Content is a fixed object literal built above, not user input,
+      // so there is nothing here for a visitor to inject into.
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+    />
+  );
+}
+
 export default function SiteLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="pub-shell">
+      <StructuredData />
       {/* First tabbable element on the page (WCAG 2.4.1 Bypass Blocks). */}
       <a className="skip-link" href="#main-content">
         Skip to main content
