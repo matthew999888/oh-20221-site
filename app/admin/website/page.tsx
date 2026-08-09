@@ -6,21 +6,33 @@ import WebsiteAdminTabs from "./WebsiteAdminTabs";
 import AnnouncementsEditor, { type SiteAnnouncement } from "./AnnouncementsEditor";
 import CalendarEditor, { type SiteCalendarEvent } from "./CalendarEditor";
 import GalleryEditor, { type SiteGallery } from "./GalleryEditor";
+import {
+  FaqEditor,
+  HomePhotosEditor,
+  InstructorsEditor,
+  MessagesInbox
+} from "./HomeContentEditors";
 
 export default async function AdminWebsitePage() {
   await requirePagePermission("website-admin", "view");
 
-  const [announcements, events, galleries] = await Promise.all([
-    prisma.announcement.findMany({
-      where: { ldrSlug: null },
-      orderBy: [{ pinned: "desc" }, { publishAt: "desc" }]
-    }),
-    prisma.calendarEvent.findMany({ orderBy: { startsAt: "asc" } }),
-    prisma.gallery.findMany({
-      orderBy: { createdAt: "desc" },
-      include: { images: { orderBy: { order: "asc" } } }
-    })
-  ]);
+  const [announcements, events, galleries, instructors, homeImages, faqs, messages] =
+    await Promise.all([
+      prisma.announcement.findMany({
+        where: { ldrSlug: null },
+        orderBy: [{ pinned: "desc" }, { publishAt: "desc" }]
+      }),
+      prisma.calendarEvent.findMany({ orderBy: { startsAt: "asc" } }),
+      prisma.gallery.findMany({
+        orderBy: { createdAt: "desc" },
+        include: { images: { orderBy: { order: "asc" } } }
+      }),
+      prisma.instructor.findMany({ orderBy: { order: "asc" } }),
+      prisma.homeImage.findMany(),
+      prisma.faqItem.findMany({ orderBy: { order: "asc" } }),
+      // Unhandled first, newest first within each group.
+      prisma.contactMessage.findMany({ orderBy: [{ handled: "asc" }, { createdAt: "desc" }] })
+    ]);
 
   const siteAnnouncements: SiteAnnouncement[] = announcements.map((a) => ({
     id: a.id,
@@ -62,6 +74,52 @@ export default async function AdminWebsitePage() {
         announcements={<AnnouncementsEditor initial={siteAnnouncements} />}
         calendar={<CalendarEditor initial={siteEvents} />}
         gallery={<GalleryEditor initial={siteGalleries} />}
+        instructors={
+          <InstructorsEditor
+            initial={instructors.map((i) => ({
+              id: i.id,
+              name: i.name,
+              title: i.title,
+              bio: i.bio,
+              photoUrl: i.photoUrl,
+              order: i.order
+            }))}
+          />
+        }
+        photos={
+          <HomePhotosEditor
+            initial={homeImages.map((i) => ({
+              slot: i.slot,
+              url: i.url,
+              alt: i.alt,
+              caption: i.caption
+            }))}
+          />
+        }
+        faq={
+          <FaqEditor
+            initial={faqs.map((f) => ({
+              id: f.id,
+              question: f.question,
+              answer: f.answer,
+              order: f.order
+            }))}
+          />
+        }
+        messages={
+          <MessagesInbox
+            initial={messages.map((m) => ({
+              id: m.id,
+              name: m.name,
+              email: m.email,
+              subject: m.subject,
+              message: m.message,
+              handled: m.handled,
+              createdAt: m.createdAt.toISOString()
+            }))}
+          />
+        }
+        unreadCount={messages.filter((m) => !m.handled).length}
       />
     </div>
   );

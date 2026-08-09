@@ -374,6 +374,70 @@ model ActivityLog {
 }
 
 // ---------------------------------------------------------------------
+// Public homepage content (staff-editable)
+// ---------------------------------------------------------------------
+
+// Instructor bios shown on the public homepage. Previously hardcoded in
+// app/(site)/page.tsx, which meant a staff change required a code
+// deploy. `photoUrl` accepts a Google Drive share link — it is passed
+// through toDriveThumbnail() (lib/google-drive.ts), the same helper the
+// gallery uses, so a plain "share" URL works without conversion.
+model Instructor {
+  id       String  @id @default(cuid())
+  name     String
+  title    String // e.g. "SASI — OH-20221"
+  bio      String
+  photoUrl String? // Google Drive share link, or null for initials
+  order    Int     @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([order])
+}
+
+// Named image slots on the homepage. Keyed by `slot` so the page asks
+// for a known position (e.g. "mission") rather than an arbitrary id,
+// and an empty slot simply renders nothing.
+model HomeImage {
+  id      String  @id @default(cuid())
+  slot    String  @unique
+  url     String // Google Drive share link
+  alt     String // required: this is real alt text, not decoration
+  caption String?
+
+  updatedAt DateTime @updatedAt
+}
+
+model FaqItem {
+  id       String @id @default(cuid())
+  question String
+  answer   String
+  order    Int    @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([order])
+}
+
+// Public contact form submissions. Stored rather than emailed so no
+// mail provider is required to stand the form up; staff read them in
+// the admin. `handled` is a simple triage flag.
+model ContactMessage {
+  id      String  @id @default(cuid())
+  name    String
+  email   String
+  subject String?
+  message String
+  handled Boolean @default(false)
+
+  createdAt DateTime @default(now())
+
+  @@index([handled, createdAt])
+}
+
+// ---------------------------------------------------------------------
 // Promotion test
 // ---------------------------------------------------------------------
 

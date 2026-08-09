@@ -42,12 +42,13 @@
   --status-success: #1e7a4a;
   --status-error: #8a1a1a;
 
-  /* Display is a serif on purpose. Condensed all-caps sans is both the
-     stock "military template" look and a hallmark of generated design;
-     an editorial serif in sentence case reads as considered. */
-  --font-display: "Newsreader", Georgia, "Times New Roman", serif;
+  /* Geometric grotesk for display — technical and forward-looking.
+     Set it tight (negative tracking) at large sizes; that, plus real
+     weight contrast against Inter, is what keeps it from reading as a
+     default sans. */
+  --font-display: "Space Grotesk", "Inter", system-ui, sans-serif;
   --font-body: "Inter", system-ui, -apple-system, sans-serif;
-  --font-ui: "Inter", system-ui, -apple-system, sans-serif;
+  --font-ui: "Space Grotesk", "Inter", system-ui, sans-serif;
 
   /* ── Public-site tokens ────────────────────────────────────────────
      Drawn from the sign-in page so the public site and the cadet portal

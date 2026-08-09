@@ -198,3 +198,152 @@ export async function deleteGalleryImage(galleryId: string, imageId: string) {
   await logActivity(session.user.id, "gallery-image.deleted", "GalleryImage", imageId, { galleryId });
   revalidatePublicPages();
 }
+
+// ---------------------------------------------------------------------
+// Homepage content: instructors, photo slots, FAQ, contact messages
+// ---------------------------------------------------------------------
+//
+// Image fields hold Google Drive share links. They are stored verbatim
+// and normalised at render time by toDriveThumbnail(), so staff can
+// paste whatever Drive gives them from the "Share" dialog.
+
+export type InstructorInput = {
+  name: string;
+  title: string;
+  bio: string;
+  photoUrl: string;
+  order: number;
+};
+
+export async function createInstructor(data: InstructorInput) {
+  const session = await assertPagePermission("website-admin", "edit");
+  const row = await prisma.instructor.create({
+    data: {
+      name: data.name.trim() || "Unnamed",
+      title: data.title.trim(),
+      bio: data.bio.trim(),
+      photoUrl: data.photoUrl.trim() || null,
+      order: Number.isFinite(data.order) ? data.order : 0
+    }
+  });
+  await logActivity(session.user.id, "instructor.created", "Instructor", row.id);
+  revalidatePublicPages();
+  return row;
+}
+
+export async function updateInstructor(id: string, data: InstructorInput) {
+  const session = await assertPagePermission("website-admin", "edit");
+  const row = await prisma.instructor.update({
+    where: { id },
+    data: {
+      name: data.name.trim() || "Unnamed",
+      title: data.title.trim(),
+      bio: data.bio.trim(),
+      photoUrl: data.photoUrl.trim() || null,
+      order: Number.isFinite(data.order) ? data.order : 0
+    }
+  });
+  await logActivity(session.user.id, "instructor.updated", "Instructor", id);
+  revalidatePublicPages();
+  return row;
+}
+
+export async function deleteInstructor(id: string) {
+  const session = await assertPagePermission("website-admin", "edit");
+  await prisma.instructor.delete({ where: { id } });
+  await logActivity(session.user.id, "instructor.deleted", "Instructor", id);
+  revalidatePublicPages();
+}
+
+export type HomeImageInput = {
+  slot: string;
+  url: string;
+  alt: string;
+  caption: string;
+};
+
+/**
+ * Upsert by slot. The page asks for a fixed set of slots, so saving is
+ * always "set this position", never "create a new one" — which keeps
+ * staff from accumulating orphaned rows the page never reads.
+ */
+export async function saveHomeImage(data: HomeImageInput) {
+  const session = await assertPagePermission("website-admin", "edit");
+  const slot = data.slot.trim();
+  const row = await prisma.homeImage.upsert({
+    where: { slot },
+    update: {
+      url: data.url.trim(),
+      alt: data.alt.trim(),
+      caption: data.caption.trim() || null
+    },
+    create: {
+      slot,
+      url: data.url.trim(),
+      alt: data.alt.trim(),
+      caption: data.caption.trim() || null
+    }
+  });
+  await logActivity(session.user.id, "home-image.saved", "HomeImage", row.id, { slot });
+  revalidatePublicPages();
+  return row;
+}
+
+export async function clearHomeImage(slot: string) {
+  const session = await assertPagePermission("website-admin", "edit");
+  await prisma.homeImage.deleteMany({ where: { slot } });
+  await logActivity(session.user.id, "home-image.cleared", "HomeImage", slot);
+  revalidatePublicPages();
+}
+
+export type FaqInput = { question: string; answer: string; order: number };
+
+export async function createFaq(data: FaqInput) {
+  const session = await assertPagePermission("website-admin", "edit");
+  const row = await prisma.faqItem.create({
+    data: {
+      question: data.question.trim(),
+      answer: data.answer.trim(),
+      order: Number.isFinite(data.order) ? data.order : 0
+    }
+  });
+  await logActivity(session.user.id, "faq.created", "FaqItem", row.id);
+  revalidatePublicPages();
+  return row;
+}
+
+export async function updateFaq(id: string, data: FaqInput) {
+  const session = await assertPagePermission("website-admin", "edit");
+  const row = await prisma.faqItem.update({
+    where: { id },
+    data: {
+      question: data.question.trim(),
+      answer: data.answer.trim(),
+      order: Number.isFinite(data.order) ? data.order : 0
+    }
+  });
+  await logActivity(session.user.id, "faq.updated", "FaqItem", id);
+  revalidatePublicPages();
+  return row;
+}
+
+export async function deleteFaq(id: string) {
+  const session = await assertPagePermission("website-admin", "edit");
+  await prisma.faqItem.delete({ where: { id } });
+  await logActivity(session.user.id, "faq.deleted", "FaqItem", id);
+  revalidatePublicPages();
+}
+
+export async function setMessageHandled(id: string, handled: boolean) {
+  const session = await assertPagePermission("website-admin", "edit");
+  await prisma.contactMessage.update({ where: { id }, data: { handled } });
+  await logActivity(session.user.id, "contact-message.triaged", "ContactMessage", id, { handled });
+  revalidatePath("/admin/website");
+}
+
+export async function deleteMessage(id: string) {
+  const session = await assertPagePermission("website-admin", "edit");
+  await prisma.contactMessage.delete({ where: { id } });
+  await logActivity(session.user.id, "contact-message.deleted", "ContactMessage", id);
+  revalidatePath("/admin/website");
+}
