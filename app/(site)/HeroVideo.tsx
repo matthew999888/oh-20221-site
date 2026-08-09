@@ -15,51 +15,41 @@ import { useEffect, useRef, useState } from "react";
 
    LOADING STRATEGY
    ----------------
-   The current file is 18 MB. That buys visually transparent quality on
-   footage full of hard cuts, which is expensive to compress — at 5 MB
-   the uniforms broke into visible blocking. Rather than trade the
-   quality back, the cost is managed by never making anyone wait for it:
+   The video ALWAYS plays. It is not gated on connection speed,
+   Save-Data, or prefers-reduced-motion — that is a deliberate product
+   decision, taken knowingly.
+
+   Accessibility note: WCAG 2.2.2 (Pause, Stop, Hide) requires a way to
+   stop motion that autoplays for more than five seconds. The transport
+   button at the bottom of the hero is that mechanism, and it is why
+   autoplaying unconditionally still conforms. Do not remove it.
+
+   The 18 MB file buys visually transparent quality on footage full of
+   hard cuts, which is expensive to compress — at 5 MB the uniforms
+   broke into visible blocking. Its weight is still kept off the
+   critical path:
 
      1. The poster (~220 KB) renders immediately as a CSS background,
         so the hero is complete on first paint.
-     2. `preload="none"` means the browser fetches nothing until asked.
-     3. The source is attached only after `load`, so the video never
-        competes with page content for bandwidth.
-     4. Visitors on a metered or slow connection, or with "reduce
-        motion" set, keep the poster and never download the video.
+     2. `preload="none"` means nothing is fetched until we ask.
+     3. The source is attached just after `load`, so the video streams
+        in behind the page rather than competing with it.
 
-   The result: the page costs ~220 KB whatever happens, and the video is
-   a progressive enhancement for connections that can absorb it.
+   So the page is usable at ~220 KB and the video arrives shortly
+   after — for everyone.
 ===================================================================== */
 
 const VIDEO_SRC = "/media/hero.mp4";
 const POSTER = "/media/hero-poster.jpg";
-
-type Connection = { saveData?: boolean; effectiveType?: string };
-
-/** True when downloading 18 MB of decoration would be inconsiderate. */
-function shouldSkipVideo(): boolean {
-  if (typeof window === "undefined") return true;
-
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return true;
-
-  const conn = (navigator as Navigator & { connection?: Connection }).connection;
-  if (conn?.saveData) return true;
-  if (conn?.effectiveType && /(^|-)(2g|3g)$/.test(conn.effectiveType)) return true;
-
-  return false;
-}
 
 export default function HeroVideo() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [src, setSrc] = useState<string | null>(null);
   const [playing, setPlaying] = useState(false);
 
-  // Attach the source only once the page has finished loading, and only
-  // if this connection should have it at all.
+  // Attach the source once the page has finished loading. Unconditional
+  // — every visitor gets the video.
   useEffect(() => {
-    if (shouldSkipVideo()) return;
-
     let cancelled = false;
     const start = () => {
       if (!cancelled) setSrc(VIDEO_SRC);
@@ -94,7 +84,7 @@ export default function HeroVideo() {
   const toggle = () => {
     const video = videoRef.current;
     if (!video) return;
-    // Lets someone who was skipped by the heuristics opt in deliberately.
+    // Covers the brief window before the source is attached.
     if (!src) {
       setSrc(VIDEO_SRC);
       return;
@@ -144,9 +134,10 @@ export default function HeroVideo() {
 
       <div className="pub-hero__scrim" aria-hidden="true" />
 
-      {/* Required for motion that autoplays and runs past 5s
-          (WCAG 2.2.2). Also the opt-in for anyone the loading
-          heuristics skipped. */}
+      {/* REQUIRED. The video autoplays unconditionally, so this is the
+          "Pause, Stop, Hide" mechanism WCAG 2.2.2 mandates for motion
+          running longer than five seconds. Removing it breaks
+          conformance. */}
       <button type="button" className="pub-hero__transport" onClick={toggle}>
         <i className={`fa-solid ${playing ? "fa-pause" : "fa-play"}`} aria-hidden="true" />
         <span className="sr-only">

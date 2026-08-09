@@ -175,13 +175,16 @@ export default function AccessibilityPage() {
               Civil Rights Division.
             </p>
 
-            <div className="pub-callout">
-              <strong>Note for unit staff:</strong> replace the placeholder response times above if
-              the district has its own published service levels, and add the district&rsquo;s named
-              504/ADA coordinator and their direct contact details — an accessibility statement
-              should name a specific person. Have the district administration confirm this page
-              before publishing.
-            </div>
+            {/* NOTE FOR MAINTAINERS (removed from the public page at the
+                unit's request, kept here so it is not lost):
+                Two things on this page are still placeholders and are
+                now published as commitments —
+                  1. the five / fifteen school-day response times above;
+                  2. the 504/ADA coordinator, referred to generically
+                     rather than named.
+                An accessibility statement should name a specific person
+                with direct contact details. Confirm both with the
+                district administration. */}
           </div>
         </div>
       </div>

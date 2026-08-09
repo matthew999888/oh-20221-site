@@ -212,12 +212,13 @@ export default function TermsPage() {
               <a href={`mailto:${CONTACTS.asi.email}`}>{CONTACTS.asi.email}</a>
             </p>
 
-            <div className="pub-callout">
-              <strong>Note for unit staff:</strong> these terms were drafted to match how the site
-              actually works, but they have not been reviewed by an attorney. Have the{" "}
-              {UNIT.district} administration or district counsel review them — particularly the
-              liability, governing law, and public records sections — before publishing.
-            </div>
+            {/* NOTE FOR MAINTAINERS (removed from the public page at the
+                unit's request, kept here so it is not lost):
+                These terms were written to match how the site actually
+                behaves, but they have NOT been reviewed by an attorney.
+                The liability, governing law, and public records sections
+                in particular should be checked by the district
+                administration or counsel. */}
           </div>
         </div>
       </div>

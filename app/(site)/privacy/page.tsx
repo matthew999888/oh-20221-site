@@ -277,13 +277,13 @@ export default function PrivacyPage() {
               <a href={`mailto:${CONTACTS.asi.email}`}>{CONTACTS.asi.email}</a>
             </p>
 
-            <div className="pub-callout">
-              <strong>Note for unit staff:</strong> this policy was drafted to match how the site
-              actually works, but it has not been reviewed by an attorney. Before publishing,
-              have the {UNIT.district} administration or district counsel review it against board
-              policy, the district&rsquo;s annual FERPA notice, and its records retention
-              schedule.
-            </div>
+            {/* NOTE FOR MAINTAINERS (removed from the public page at the
+                unit's request, kept here so it is not lost):
+                This policy was written to match how the site actually
+                behaves, but it has NOT been reviewed by an attorney.
+                It should be checked by the district administration or
+                counsel against board policy, the annual FERPA notice,
+                and the records retention schedule. */}
           </div>
         </div>
       </div>

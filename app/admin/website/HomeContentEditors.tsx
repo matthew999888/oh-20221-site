@@ -37,6 +37,11 @@ export type AdminMessage = {
 /** The photo positions the homepage actually reads. Adding one here is
  *  not enough — the page must render a <HomeFigure> for it too. */
 export const HOME_IMAGE_SLOTS: { slot: string; label: string; hint: string }[] = [
+  {
+    slot: "corps",
+    label: "Corps photo — full width band",
+    hint: "The whole-unit group photo, shown between the command staff and the instructors. Displayed uncropped, so upload it exactly as you want it seen. Leave empty to use the built-in photo."
+  },
   { slot: "about", label: "About section — left", hint: "Cadets in class, drill, or formation." },
   { slot: "service", label: "About section — right", hint: "Community service or a ceremony." }
 ];

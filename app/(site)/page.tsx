@@ -84,6 +84,7 @@ export default async function HomePage() {
   ]);
 
   const imageBySlot = new Map(images.map((i) => [i.slot, i]));
+  const corpsPhoto = imageBySlot.get("corps");
 
   return (
     <>
@@ -206,7 +207,10 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ── Corps photo ─────────────────────────────────────────────── */}
+      {/* ── Corps photo ───────────────────────────────────────────────
+          Editable via the "corps" HomeImage slot; falls back to the
+          committed file so the section is never empty. Rendered
+          uncropped — cropping a group photo cuts people out of it. */}
       <section className="pub-band" aria-labelledby="corps-photo-heading">
         <h2 className="sr-only" id="corps-photo-heading">
           The corps
@@ -214,14 +218,17 @@ export default async function HomePage() {
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           className="pub-band__img"
-          src="/media/all-cadets.jpg"
-          alt="The cadets of OH-20221 AFJROTC assembled in uniform for a unit photograph."
-          width={1800}
-          height={1013}
+          src={
+            corpsPhoto ? toDriveThumbnail(corpsPhoto.url, 2000) : "/media/all-cadets.jpg"
+          }
+          alt={
+            corpsPhoto?.alt ??
+            "The cadets of OH-20221 AFJROTC assembled in uniform for a unit photograph."
+          }
           loading="lazy"
         />
         <p className="pub-band__caption">
-          The cadets of OH-20221 &middot; {UNIT.school}
+          {corpsPhoto?.caption ?? `The cadets of OH-20221 · ${UNIT.school}`}
         </p>
       </section>
 

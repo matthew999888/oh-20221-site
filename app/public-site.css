@@ -685,9 +685,11 @@ a.pub-card:hover {
   color: var(--ink-muted);
 }
 
-/* ── Full-bleed photo band ─────────────────────────────────────────
-   For the corps group photo: edge-to-edge, capped so it never
-   dominates a tall screen. */
+/* ── Photo band ────────────────────────────────────────────────────
+   For the corps group photo. Shown UNCROPPED: a group photo is the one
+   image where cropping is actively harmful, because it cuts people out
+   of the frame. The image keeps its own aspect ratio and the band
+   simply becomes as tall as it needs to be. */
 .pub-band {
   position: relative;
   border-top: 1px solid var(--line);
@@ -697,9 +699,7 @@ a.pub-card:hover {
 .pub-band__img {
   display: block;
   width: 100%;
-  max-height: 78vh;
-  object-fit: cover;
-  object-position: center;
+  height: auto; /* no cropping — the whole frame is visible */
 }
 .pub-band__caption {
   padding: 1rem clamp(1.25rem, 5vw, 4rem) 1.25rem;
