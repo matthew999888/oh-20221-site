@@ -6,7 +6,6 @@ type TabKey =
   | "announcements"
   | "calendar"
   | "gallery"
-  | "instructors"
   | "photos"
   | "faq"
   | "messages";
@@ -15,7 +14,6 @@ export default function WebsiteAdminTabs({
   announcements,
   calendar,
   gallery,
-  instructors,
   photos,
   faq,
   messages,
@@ -24,7 +22,6 @@ export default function WebsiteAdminTabs({
   announcements: ReactNode;
   calendar: ReactNode;
   gallery: ReactNode;
-  instructors: ReactNode;
   photos: ReactNode;
   faq: ReactNode;
   messages: ReactNode;
@@ -36,7 +33,6 @@ export default function WebsiteAdminTabs({
     { key: "announcements", label: "Announcements", icon: "fa-solid fa-bullhorn" },
     { key: "calendar", label: "Calendar", icon: "fa-solid fa-calendar-days" },
     { key: "gallery", label: "Gallery", icon: "fa-solid fa-images" },
-    { key: "instructors", label: "Instructors", icon: "fa-solid fa-user-tie" },
     { key: "photos", label: "Homepage photos", icon: "fa-solid fa-image" },
     { key: "faq", label: "FAQ", icon: "fa-solid fa-circle-question" },
     {
@@ -87,7 +83,6 @@ export default function WebsiteAdminTabs({
       {tab === "announcements" && announcements}
       {tab === "calendar" && calendar}
       {tab === "gallery" && gallery}
-      {tab === "instructors" && instructors}
       {tab === "photos" && photos}
       {tab === "faq" && faq}
       {tab === "messages" && messages}

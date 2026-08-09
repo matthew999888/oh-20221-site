@@ -377,11 +377,17 @@ model ActivityLog {
 // Public homepage content (staff-editable)
 // ---------------------------------------------------------------------
 
-// Instructor bios shown on the public homepage. Previously hardcoded in
-// app/(site)/page.tsx, which meant a staff change required a code
-// deploy. `photoUrl` accepts a Google Drive share link — it is passed
-// through toDriveThumbnail() (lib/google-drive.ts), the same helper the
-// gallery uses, so a plain "share" URL works without conversion.
+// CURRENTLY UNUSED. The dedicated instructors section was removed from
+// the homepage, so nothing reads this table and the admin tab for it
+// was removed too. Kept rather than dropped because the table already
+// holds the two real bios, and a destructive migration to reclaim an
+// empty table is not worth the risk. The server actions in
+// app/admin/website/_actions.ts remain if the section is ever restored.
+// Instructor contact details still appear in the site footer and the
+// homepage contact section, sourced from lib/legal.ts.
+//
+// `photoUrl` accepts a Google Drive share link, normalised at render
+// time by toDriveThumbnail() (lib/google-drive.ts).
 model Instructor {
   id       String  @id @default(cuid())
   name     String

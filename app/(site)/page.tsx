@@ -77,8 +77,7 @@ const ROSTER: { tier: string; people: { rank: string; name: string; role: string
 ];
 
 export default async function HomePage() {
-  const [instructors, images, faqs] = await Promise.all([
-    prisma.instructor.findMany({ orderBy: { order: "asc" } }),
+  const [images, faqs] = await Promise.all([
     prisma.homeImage.findMany(),
     prisma.faqItem.findMany({ orderBy: { order: "asc" } })
   ]);
@@ -194,7 +193,7 @@ export default async function HomePage() {
                 <h3 className="pub-roster__label">{tier.tier}</h3>
                 <div className="pub-roster__people">
                   {tier.people.map((p) => (
-                    <div key={p.name + p.role}>
+                    <div className="pub-person" key={p.name + p.role}>
                       <p className="pub-person__rank">{p.rank}</p>
                       <p className="pub-person__name">{p.name}</p>
                       <p className="pub-person__role">{p.role}</p>
@@ -207,73 +206,63 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ── Corps photo ───────────────────────────────────────────────
-          Editable via the "corps" HomeImage slot; falls back to the
-          committed file so the section is never empty. Rendered
-          uncropped — cropping a group photo cuts people out of it. */}
-      <section className="pub-band" aria-labelledby="corps-photo-heading">
-        <h2 className="sr-only" id="corps-photo-heading">
-          The corps
-        </h2>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          className="pub-band__img"
-          src={
-            corpsPhoto ? toDriveThumbnail(corpsPhoto.url, 2000) : "/media/all-cadets.jpg"
-          }
-          alt={
-            corpsPhoto?.alt ??
-            "The cadets of OH-20221 AFJROTC assembled in uniform for a unit photograph."
-          }
-          loading="lazy"
-        />
-        <p className="pub-band__caption">
-          {corpsPhoto?.caption ?? `The cadets of OH-20221 · ${UNIT.school}`}
-        </p>
-      </section>
-
-      {/* ── Instructors ─────────────────────────────────────────────── */}
-      <section className="pub-section pub-section--rule" aria-labelledby="instructors-heading">
+      {/* ── Our cadets ────────────────────────────────────────────────
+          The corps photo as a supporting element beside the copy rather
+          than a full-bleed band. Editable via the "corps" HomeImage
+          slot, falling back to the committed file so it is never empty.
+          Uncropped: cropping a group photo cuts people out of it. */}
+      <section className="pub-section pub-section--rule" aria-labelledby="cadets-heading">
         <div className="pub-wrap">
           <div className="pub-sectionhead">
             <p className="pub-sectionhead__label">
-              <span className="pub-num">04</span>Unit leadership
+              <span className="pub-num">04</span>Our cadets
             </p>
             <div>
-              <h2 className="pub-h2" id="instructors-heading">
-                The instructors.
+              <h2 className="pub-h2" id="cadets-heading">
+                The corps.
               </h2>
             </div>
           </div>
 
-          {instructors.length === 0 ? (
-            <p className="pub-empty">
-              No instructors have been added yet. Staff can add them under Admin &rarr; Website
-              &rarr; Instructors.
-            </p>
-          ) : (
-            <div className="pub-grid pub-grid--2">
-              {instructors.map((i) => (
-                <article className="pub-instructor" key={i.id}>
-                  {i.photoUrl && (
-                    <div className="pub-figure__frame" style={{ aspectRatio: "4 / 3" }}>
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={toDriveThumbnail(i.photoUrl, 800)}
-                        alt={`${i.name}, ${i.title}`}
-                        loading="lazy"
-                      />
-                    </div>
-                  )}
-                  <div>
-                    <h3 className="pub-instructor__name">{i.name}</h3>
-                    <p className="pub-instructor__role">{i.title}</p>
-                  </div>
-                  <p className="pub-instructor__bio">{i.bio}</p>
-                </article>
-              ))}
+          <div className="pub-feature">
+            <figure style={{ margin: 0 }}>
+              <div className="pub-feature__media">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={corpsPhoto ? toDriveThumbnail(corpsPhoto.url, 1400) : "/media/all-cadets.jpg"}
+                  alt={
+                    corpsPhoto?.alt ??
+                    "The cadets of OH-20221 AFJROTC assembled in uniform for a unit photograph."
+                  }
+                  loading="lazy"
+                />
+              </div>
+              <figcaption className="pub-feature__caption">
+                {corpsPhoto?.caption ?? `The cadets of OH-20221 · ${UNIT.school}`}
+              </figcaption>
+            </figure>
+
+            <div className="pub-feature__body">
+              <p className="pub-feature__lead">
+                We could not be prouder of these cadets.
+              </p>
+              <p>
+                Every cadet on this page earned their place. They show up early, hold each other
+                to a standard nobody imposed on them, and carry themselves the same way whether
+                anyone is watching or not.
+              </p>
+              <p>
+                They represent Logan High School at drill meets and competitions, stand for the
+                colors at ceremonies, and give their weekends to Hocking County — parades,
+                memorials, food drives, and school events that would be smaller without them.
+              </p>
+              <p>
+                What they build here — discipline, judgment, and the habit of putting the group
+                first — goes with them long after graduation. It is a privilege to work with
+                them.
+              </p>
             </div>
-          )}
+          </div>
         </div>
       </section>
 

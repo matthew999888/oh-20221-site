@@ -6,17 +6,12 @@ import WebsiteAdminTabs from "./WebsiteAdminTabs";
 import AnnouncementsEditor, { type SiteAnnouncement } from "./AnnouncementsEditor";
 import CalendarEditor, { type SiteCalendarEvent } from "./CalendarEditor";
 import GalleryEditor, { type SiteGallery } from "./GalleryEditor";
-import {
-  FaqEditor,
-  HomePhotosEditor,
-  InstructorsEditor,
-  MessagesInbox
-} from "./HomeContentEditors";
+import { FaqEditor, HomePhotosEditor, MessagesInbox } from "./HomeContentEditors";
 
 export default async function AdminWebsitePage() {
   await requirePagePermission("website-admin", "view");
 
-  const [announcements, events, galleries, instructors, homeImages, faqs, messages] =
+  const [announcements, events, galleries, homeImages, faqs, messages] =
     await Promise.all([
       prisma.announcement.findMany({
         where: { ldrSlug: null },
@@ -27,7 +22,6 @@ export default async function AdminWebsitePage() {
         orderBy: { createdAt: "desc" },
         include: { images: { orderBy: { order: "asc" } } }
       }),
-      prisma.instructor.findMany({ orderBy: { order: "asc" } }),
       prisma.homeImage.findMany(),
       prisma.faqItem.findMany({ orderBy: { order: "asc" } }),
       // Unhandled first, newest first within each group.
@@ -74,18 +68,6 @@ export default async function AdminWebsitePage() {
         announcements={<AnnouncementsEditor initial={siteAnnouncements} />}
         calendar={<CalendarEditor initial={siteEvents} />}
         gallery={<GalleryEditor initial={siteGalleries} />}
-        instructors={
-          <InstructorsEditor
-            initial={instructors.map((i) => ({
-              id: i.id,
-              name: i.name,
-              title: i.title,
-              bio: i.bio,
-              photoUrl: i.photoUrl,
-              order: i.order
-            }))}
-          />
-        }
         photos={
           <HomePhotosEditor
             initial={homeImages.map((i) => ({

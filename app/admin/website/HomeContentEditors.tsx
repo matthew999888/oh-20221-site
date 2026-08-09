@@ -4,24 +4,13 @@ import { useState, useTransition } from "react";
 import {
   clearHomeImage,
   createFaq,
-  createInstructor,
   deleteFaq,
-  deleteInstructor,
   deleteMessage,
   saveHomeImage,
   setMessageHandled,
-  updateFaq,
-  updateInstructor
+  updateFaq
 } from "./_actions";
 
-export type AdminInstructor = {
-  id: string;
-  name: string;
-  title: string;
-  bio: string;
-  photoUrl: string | null;
-  order: number;
-};
 export type AdminHomeImage = { slot: string; url: string; alt: string; caption: string | null };
 export type AdminFaq = { id: string; question: string; answer: string; order: number };
 export type AdminMessage = {
@@ -39,8 +28,8 @@ export type AdminMessage = {
 export const HOME_IMAGE_SLOTS: { slot: string; label: string; hint: string }[] = [
   {
     slot: "corps",
-    label: "Corps photo — full width band",
-    hint: "The whole-unit group photo, shown between the command staff and the instructors. Displayed uncropped, so upload it exactly as you want it seen. Leave empty to use the built-in photo."
+    label: "Corps photo — Our cadets section",
+    hint: "The whole-unit group photo, shown beside the text in the “Our cadets” section. Displayed uncropped, so upload it framed exactly as you want it seen. Leave empty to use the built-in photo."
   },
   { slot: "about", label: "About section — left", hint: "Cadets in class, drill, or formation." },
   { slot: "service", label: "About section — right", hint: "Community service or a ceremony." }
@@ -53,133 +42,6 @@ function DriveHelp() {
       access &rarr; <strong>Anyone with the link</strong>, then Copy link. If it is not set to
       &ldquo;anyone with the link&rdquo;, the photo will not load for visitors.
     </p>
-  );
-}
-
-/* ── Instructors ─────────────────────────────────────────────────── */
-export function InstructorsEditor({ initial }: { initial: AdminInstructor[] }) {
-  const [rows, setRows] = useState(initial);
-  const [pending, start] = useTransition();
-
-  const blank: AdminInstructor = {
-    id: "",
-    name: "",
-    title: "",
-    bio: "",
-    photoUrl: "",
-    order: rows.length
-  };
-  const [draft, setDraft] = useState<AdminInstructor | null>(null);
-
-  function save(d: AdminInstructor) {
-    start(async () => {
-      const payload = {
-        name: d.name,
-        title: d.title,
-        bio: d.bio,
-        photoUrl: d.photoUrl ?? "",
-        order: d.order
-      };
-      if (d.id) {
-        const updated = await updateInstructor(d.id, payload);
-        setRows((r) => r.map((x) => (x.id === d.id ? { ...x, ...updated } : x)));
-      } else {
-        const created = await createInstructor(payload);
-        setRows((r) => [...r, created]);
-      }
-      setDraft(null);
-    });
-  }
-
-  return (
-    <div>
-      <p className="dash-page__subtitle">
-        Shown in the &ldquo;Unit leadership&rdquo; section of the homepage, ordered by the order
-        number.
-      </p>
-
-      {rows.map((r) => (
-        <div className="content-block__box" key={r.id}>
-          <strong>{r.name}</strong> — {r.title}
-          <p style={{ opacity: 0.75, fontSize: "0.88rem", margin: "0.4rem 0" }}>
-            {r.bio.slice(0, 160)}
-            {r.bio.length > 160 ? "…" : ""}
-          </p>
-          <p style={{ fontSize: "0.8rem", opacity: 0.7 }}>
-            Photo: {r.photoUrl ? "set" : "none"} · Order: {r.order}
-          </p>
-          <div className="content-block__actions">
-            <button className="btn-small" onClick={() => setDraft(r)} disabled={pending}>
-              Edit
-            </button>
-            <button
-              className="btn-small"
-              disabled={pending}
-              onClick={() =>
-                start(async () => {
-                  await deleteInstructor(r.id);
-                  setRows((x) => x.filter((y) => y.id !== r.id));
-                })
-              }
-            >
-              Delete
-            </button>
-          </div>
-        </div>
-      ))}
-
-      {draft ? (
-        <div className="content-block__box">
-          <label className="form-label">Name</label>
-          <input
-            className="form-input"
-            value={draft.name}
-            onChange={(e) => setDraft({ ...draft, name: e.target.value })}
-          />
-          <label className="form-label">Title</label>
-          <input
-            className="form-input"
-            placeholder="SASI — OH-20221"
-            value={draft.title}
-            onChange={(e) => setDraft({ ...draft, title: e.target.value })}
-          />
-          <label className="form-label">Biography</label>
-          <textarea
-            className="form-input"
-            rows={5}
-            value={draft.bio}
-            onChange={(e) => setDraft({ ...draft, bio: e.target.value })}
-          />
-          <label className="form-label">Photo — Google Drive link</label>
-          <input
-            className="form-input"
-            placeholder="https://drive.google.com/file/d/…/view"
-            value={draft.photoUrl ?? ""}
-            onChange={(e) => setDraft({ ...draft, photoUrl: e.target.value })}
-          />
-          <DriveHelp />
-          <label className="form-label">Order</label>
-          <input
-            className="form-input"
-            type="number"
-            value={draft.order}
-            onChange={(e) => setDraft({ ...draft, order: parseInt(e.target.value, 10) || 0 })}
-          />
-          <div className="content-block__actions">
-            <button className="btn-small btn-small--primary" onClick={() => save(draft)} disabled={pending}>
-              Save
-            </button>
-            <button className="btn-small" onClick={() => setDraft(null)} disabled={pending}>
-              Cancel
-            </button>
-          </div>
-        </div>
-      ) : (
-        <button className="btn-small btn-small--primary" onClick={() => setDraft(blank)}>
-          Add instructor
-        </button>
-      )}
-    </div>
   );
 }
 
