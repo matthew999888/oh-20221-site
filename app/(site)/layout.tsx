@@ -1,90 +1,116 @@
 import Link from "next/link";
-
-function SiteHeader() {
-  return (
-    <header className="site-header">
-      <Link href="/" className="site-header__brand">
-        <span className="badge-ring badge-ring--sm" aria-hidden="true">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/badge.png" alt="" className="site-header__brand-badge" />
-        </span>
-        <span className="site-header__brand-text">
-          <span className="site-header__brand-id">OH-20221 AFJROTC</span>
-          <span className="site-header__brand-school">Logan High School</span>
-        </span>
-      </Link>
-      <input type="checkbox" id="site-nav-toggle" className="site-header__nav-toggle-input" />
-      <label htmlFor="site-nav-toggle" className="site-header__nav-toggle" aria-label="Toggle menu">
-        <span />
-        <span />
-        <span />
-      </label>
-      <nav className="site-header__nav" aria-label="Main">
-        <Link href="/">Home</Link>
-        <Link href="/announcements">Announcements</Link>
-        <Link href="/calendar">Calendar</Link>
-        <Link href="/gallery">Gallery</Link>
-        <Link href="/roster">Roster</Link>
-        <Link href="/login" className="site-header__cta">
-          Member Login
-        </Link>
-      </nav>
-    </header>
-  );
-}
+import "../public-site.css";
+import SiteHeader from "./SiteHeader";
 
 function SiteFooter() {
   return (
-    <footer className="hh-footer">
-      <div className="hh-footer-inner">
-        <div className="hh-footer-brand">
-          <div className="site-header__brand" style={{ pointerEvents: "none" }}>
-            <span className="badge-ring badge-ring--sm" aria-hidden="true">
+    <footer className="pub-footer">
+      <div className="pub-wrap pub-footer__grid">
+        <div>
+          <div className="pub-brand">
+            <span className="pub-brand__mark" aria-hidden="true">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/badge.png" alt="" className="site-header__brand-badge" />
+              <img src="/badge.png" alt="" />
             </span>
-            <span className="site-header__brand-text">
-              <span className="site-header__brand-id">OH-20221 AFJROTC</span>
-              <span className="site-header__brand-school">Logan High School</span>
+            <span className="pub-brand__text">
+              <span className="pub-brand__id">OH-20221 AFJROTC</span>
+              <span className="pub-brand__school">Logan High School</span>
             </span>
           </div>
-          <p className="hh-footer-tagline">Air Force Junior ROTC &middot; United States Air Force</p>
+          <p className="pub-footer__tagline">
+            Air Force Junior ROTC, Unit OH-20221 — developing citizens of character dedicated to
+            serving their nation and community.
+          </p>
         </div>
 
-        <div className="hh-footer-col">
-          <div className="hh-footer-heading">Navigation</div>
-          <Link href="/">Home</Link>
-          <Link href="/announcements">Announcements</Link>
-          <Link href="/calendar">Calendar</Link>
-          <Link href="/gallery">Gallery</Link>
-          <Link href="/roster">Roster</Link>
-        </div>
+        <nav aria-labelledby="footer-nav-heading">
+          <h2 className="pub-footer__heading" id="footer-nav-heading">
+            Navigation
+          </h2>
+          <ul className="pub-footer__list">
+            <li>
+              <Link href="/">Home</Link>
+            </li>
+            <li>
+              <Link href="/announcements">Announcements</Link>
+            </li>
+            <li>
+              <Link href="/calendar">Calendar</Link>
+            </li>
+            <li>
+              <Link href="/gallery">Gallery</Link>
+            </li>
+            <li>
+              <Link href="/roster">Roster</Link>
+            </li>
+          </ul>
+        </nav>
 
-        <div className="hh-footer-col">
-          <div className="hh-footer-heading">Unit Info</div>
-          <Link href="/login">Cadet Login</Link>
-        </div>
+        <nav aria-labelledby="footer-portal-heading">
+          <h2 className="pub-footer__heading" id="footer-portal-heading">
+            Cadet Portal
+          </h2>
+          <ul className="pub-footer__list">
+            <li>
+              <Link href="/login">Member Login</Link>
+            </li>
+            <li>
+              <Link href="/signup">Request an Account</Link>
+            </li>
+          </ul>
+        </nav>
 
-        <div className="hh-footer-col">
-          <div className="hh-footer-heading">Contact</div>
-          <p className="hh-footer-text">
+        <div>
+          <h2 className="pub-footer__heading">Contact</h2>
+          <address className="pub-footer__text">
             Logan High School
             <br />
             14470 State Route 328
             <br />
             Logan, OH 43138
-          </p>
-          <a href="mailto:lroberts@lhsd.k12.oh.us" className="hh-footer-text">
-            Lance Roberts &lt;lroberts@lhsd.k12.oh.us&gt;
-          </a>
-          <a href="mailto:jgeorge@lhsd.k12.oh.us" className="hh-footer-text">
-            Jeff George &lt;jgeorge@lhsd.k12.oh.us&gt;
-          </a>
+            <br />
+            <br />
+            <a href="mailto:lroberts@lhsd.k12.oh.us">lroberts@lhsd.k12.oh.us</a>
+            <br />
+            Maj Lance Roberts, SASI
+            <br />
+            <br />
+            <a href="mailto:jgeorge@lhsd.k12.oh.us">jgeorge@lhsd.k12.oh.us</a>
+            <br />
+            MSgt Jeffery George, ASI
+          </address>
         </div>
       </div>
 
-      <div className="hh-footer-bottom">
-        <p>&copy; {new Date().getFullYear()} OH-20221 AFJROTC &middot; Logan High School. All rights reserved.</p>
+      <div className="pub-footer__bottom">
+        <div className="pub-wrap">
+          {/* Required-ish disclaimers for a public-school unit page that
+              uses USAF marks. Reviewed content lives on /privacy and
+              /terms; this is the short form. */}
+          <p className="pub-footer__disclaimer">
+            OH-20221 AFJROTC is a citizenship and leadership program offered at Logan High School,
+            Logan-Hocking Local School District. This is not an official U.S. Air Force or
+            Department of Defense website, and the appearance of USAF or DoD visual information
+            does not imply or constitute endorsement. Enrollment in AFJROTC carries no military
+            service obligation.
+          </p>
+          <div className="pub-footer__bottom-inner">
+            <p className="pub-footer__copy">
+              &copy; {new Date().getFullYear()} OH-20221 AFJROTC, Logan High School.
+            </p>
+            <ul className="pub-footer__legal">
+              <li>
+                <Link href="/privacy">Privacy Policy</Link>
+              </li>
+              <li>
+                <Link href="/terms">Terms of Use</Link>
+              </li>
+              <li>
+                <Link href="/accessibility">Accessibility</Link>
+              </li>
+            </ul>
+          </div>
+        </div>
       </div>
     </footer>
   );
@@ -92,15 +118,16 @@ function SiteFooter() {
 
 export default function SiteLayout({ children }: { children: React.ReactNode }) {
   return (
-    <>
-      <div className="bg-layer" aria-hidden="true">
-        <div className="bg-orb-2" />
-      </div>
-      <div className="site-shell">
-        <SiteHeader />
-        <div className="site-shell__content">{children}</div>
-        <SiteFooter />
-      </div>
-    </>
+    <div className="pub-shell">
+      {/* First tabbable element on the page (WCAG 2.4.1 Bypass Blocks). */}
+      <a className="skip-link" href="#main-content">
+        Skip to main content
+      </a>
+      <SiteHeader />
+      <main className="pub-main" id="main-content" tabIndex={-1}>
+        {children}
+      </main>
+      <SiteFooter />
+    </div>
   );
 }

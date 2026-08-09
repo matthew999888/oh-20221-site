@@ -1,6 +1,7 @@
 "use client";
 
 import { useFormState, useFormStatus } from "react-dom";
+import Turnstile from "@/components/Turnstile";
 import { signUpAction, type SignUpState } from "./actions";
 
 const initialState: SignUpState = { ok: false, message: "" };
@@ -107,8 +108,55 @@ export default function SignUpPage() {
                 )}
               </div>
 
+              {/* COPPA (15 U.S.C. §§ 6501-6506): we must not knowingly
+                  collect personal information from a child under 13, so
+                  the age is attested explicitly rather than assumed from
+                  "this is a high school program". */}
+              <div className={`form-group ${state.fieldErrors?.ageConfirmed ? "has-error" : ""}`}>
+                <label
+                  className="form-label"
+                  htmlFor="ageConfirmed"
+                  style={{
+                    display: "flex",
+                    alignItems: "flex-start",
+                    gap: "0.6rem",
+                    cursor: "pointer",
+                    textTransform: "none",
+                    letterSpacing: 0,
+                    lineHeight: 1.5
+                  }}
+                >
+                  <input
+                    type="checkbox"
+                    id="ageConfirmed"
+                    name="ageConfirmed"
+                    required
+                    style={{ marginTop: "0.2rem", width: "18px", height: "18px", flexShrink: 0 }}
+                  />
+                  <span>
+                    I am 13 years of age or older, and I agree to the{" "}
+                    <a href="/terms" style={{ color: "var(--accent)", textDecoration: "underline" }}>
+                      Terms of Use
+                    </a>{" "}
+                    and{" "}
+                    <a
+                      href="/privacy"
+                      style={{ color: "var(--accent)", textDecoration: "underline" }}
+                    >
+                      Privacy Policy
+                    </a>
+                    .
+                  </span>
+                </label>
+                {state.fieldErrors?.ageConfirmed && (
+                  <div className="field-error">{state.fieldErrors.ageConfirmed}</div>
+                )}
+              </div>
+
+              <Turnstile action="signup" />
+
               {!state.ok && state.message && (
-                <div className="auth-status error">
+                <div className="auth-status error" role="alert">
                   <i className="fa-solid fa-circle-exclamation" aria-hidden="true" />
                   <span>{state.message}</span>
                 </div>

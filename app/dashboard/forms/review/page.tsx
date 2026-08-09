@@ -1,6 +1,6 @@
 export const dynamic = "force-dynamic";
 
-import { requirePagePermission } from "@/lib/permissions";
+import { requirePagePermission } from "@/lib/permissions-server";
 import { prisma } from "@/lib/prisma";
 
 export default async function StaffFormsReviewPage() {

@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
-import { assertPagePermission } from "@/lib/permissions";
+import { assertPagePermission } from "@/lib/permissions-server";
 import { logActivity } from "@/lib/activity-log";
 
 export async function approveUser(userId: string) {

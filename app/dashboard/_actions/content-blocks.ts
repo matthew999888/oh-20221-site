@@ -2,7 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
-import { assertPagePermission, type PageKey } from "@/lib/permissions";
+import { assertPagePermission } from "@/lib/permissions-server";
+import type { PageKey } from "@/lib/permissions";
 
 async function logEdit(userId: string, action: string, targetId: string) {
   await prisma.activityLog.create({

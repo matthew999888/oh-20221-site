@@ -1,5 +1,8 @@
 import { PrismaClient, RoleKind } from "@prisma/client";
-import bcrypt from "bcryptjs";
+// Uses the same hasher as the app (PBKDF2 via WebCrypto), so a seeded
+// admin gets a current-format hash rather than a legacy bcrypt one that
+// would have to be upgraded on first sign-in.
+import { hashPassword } from "../lib/password";
 
 const prisma = new PrismaClient();
 
@@ -89,7 +92,7 @@ async function main() {
   const adminPassword = process.env.SEED_ADMIN_PASSWORD;
 
   if (adminEmail && adminPassword) {
-    const passwordHash = await bcrypt.hash(adminPassword, 12);
+    const passwordHash = await hashPassword(adminPassword);
     const adminRole = await prisma.role.findUnique({ where: { slug: "admin" } });
 
     const admin = await prisma.user.upsert({

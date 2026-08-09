@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, type FormEvent, Suspense } from "react";
+import { useRef, useState, type FormEvent, Suspense } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Turnstile from "@/components/Turnstile";
 
 export default function LoginPage() {
   return (
@@ -22,22 +23,42 @@ function LoginPageInner() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     setError(null);
     setLoading(true);
 
+    // The Turnstile widget injects its token as a hidden input named
+    // `cf-turnstile-response`. This form posts through next-auth's
+    // signIn() rather than a native submit, so read it off the form.
+    const turnstileToken =
+      formRef.current instanceof HTMLFormElement
+        ? String(new FormData(formRef.current).get("cf-turnstile-response") ?? "")
+        : "";
+
     const result = await signIn("credentials", {
       email,
       password,
+      turnstileToken,
       redirect: false
     });
 
     setLoading(false);
 
     if (result?.error) {
-      setError(result.error === "CredentialsSignin" ? "Incorrect email or password." : result.error);
+      // next-auth collapses any thrown authorize() error to the generic
+      // "CredentialsSignin" code in some configurations; when the real
+      // message survives (rate limit, Turnstile), show it — it tells the
+      // user what to actually do.
+      setError(
+        result.error === "CredentialsSignin" ? "Incorrect email or password." : result.error
+      );
+      // A Turnstile token is single-use, so the widget must be reset
+      // before the user can retry — otherwise the next attempt fails
+      // with "timeout-or-duplicate" no matter what they type.
+      window.turnstile?.reset();
       return;
     }
 
@@ -75,7 +96,7 @@ function LoginPageInner() {
           </h1>
           <p className="card-sub">Enter your unit credentials to access the cadet portal.</p>
 
-          <form onSubmit={handleSubmit} noValidate aria-label="Sign in to cadet portal">
+          <form ref={formRef} onSubmit={handleSubmit} noValidate aria-label="Sign in to cadet portal">
             <div className="form-group">
               <label className="form-label" htmlFor="email">
                 Email Address
@@ -122,8 +143,12 @@ function LoginPageInner() {
               </div>
             </div>
 
+            <Turnstile action="login" />
+
+            {/* role="alert" so a screen reader announces the failure
+                immediately instead of leaving the user waiting. */}
             {error && (
-              <div className="auth-status error">
+              <div className="auth-status error" role="alert">
                 <i className="fa-solid fa-circle-exclamation" aria-hidden="true" />
                 <span>{error}</span>
               </div>

@@ -1,6 +1,6 @@
 export const dynamic = "force-dynamic";
 
-import { requirePagePermission } from "@/lib/permissions";
+import { requirePagePermission } from "@/lib/permissions-server";
 import InspectionForm from "./InspectionForm";
 
 export default async function InspectionPage() {

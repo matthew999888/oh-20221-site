@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useId, useMemo, useState } from "react";
 import Link from "next/link";
 
 type GalleryDTO = {
@@ -13,6 +13,7 @@ type GalleryDTO = {
 
 export default function GalleryIndexClient({ galleries }: { galleries: GalleryDTO[] }) {
   const [query, setQuery] = useState("");
+  const searchId = useId();
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -25,37 +26,51 @@ export default function GalleryIndexClient({ galleries }: { galleries: GalleryDT
   return (
     <>
       {galleries.length > 4 && (
-        <div className="form-group" style={{ maxWidth: "360px", marginTop: "1rem" }}>
-          <input
-            type="search"
-            className="form-input"
-            placeholder="Search galleries…"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            aria-label="Search galleries"
-          />
+        <div className="pub-filters">
+          <div className="pub-field" style={{ flex: "0 1 360px" }}>
+            <label className="pub-field__label" htmlFor={searchId}>
+              Search galleries
+            </label>
+            <input
+              id={searchId}
+              type="search"
+              className="pub-input"
+              placeholder="Album name or description…"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+          </div>
         </div>
       )}
 
+      {galleries.length > 4 && (
+        <p className="pub-result-count" role="status" aria-live="polite">
+          {query.trim()
+            ? `Showing ${filtered.length} of ${galleries.length} albums`
+            : `${galleries.length} albums`}
+        </p>
+      )}
+
       {filtered.length === 0 ? (
-        <p className="content-block__empty">No galleries match "{query}".</p>
+        <p className="pub-empty">No galleries match “{query}”.</p>
       ) : (
-        <div className="gallery-grid">
+        <div className="pub-gallery-grid">
           {filtered.map((g) => (
-            <Link href={`/gallery/${g.id}`} key={g.id} className="gallery-card">
+            <Link href={`/gallery/${g.id}`} key={g.id} className="pub-gallery-card">
               {g.coverUrl ? (
+                // Decorative: the album title below is the accessible name
+                // for this link, so alt text here would be redundant noise.
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={g.coverUrl} alt="" loading="lazy" />
               ) : (
-                <div className="gallery-teaser__placeholder" />
+                <span className="pub-gallery-card__placeholder" />
               )}
-              <div className="gallery-card__info">
-                <h3>{g.title}</h3>
-                {g.description && <p>{g.description}</p>}
-                <span className="gallery-card__count">
+              <span className="pub-gallery-card__label">
+                {g.title}
+                <span className="pub-gallery-card__count">
                   {g.photoCount} photo{g.photoCount === 1 ? "" : "s"}
                 </span>
-              </div>
+              </span>
             </Link>
           ))}
         </div>
