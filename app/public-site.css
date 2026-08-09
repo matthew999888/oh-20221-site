@@ -628,38 +628,12 @@ a.pub-card:hover {
 }
 
 /* ── Command staff roster ──────────────────────────────────────────
-   Not a tree. The unit's actual reporting lines below the Corps
-   Commander were never specified, and a tree diagram asserts them —
-   so this presents tiers of responsibility without claiming who
-   reports to whom. Each tier is a labelled band separated by a rule. */
+   One flat grid, no tiers and no tree. The unit's actual reporting
+   lines were never supplied, and both a tree and labelled tiers assert
+   them. A single list states only who holds which position. */
 .pub-roster {
-  border-top: 1px solid var(--line);
-}
-.pub-roster__tier {
   display: grid;
-  grid-template-columns: minmax(0, 13rem) minmax(0, 1fr);
-  gap: clamp(1rem, 4vw, 4rem);
-  padding-block: 2rem;
-  border-bottom: 1px solid var(--line);
-}
-@media (max-width: 780px) {
-  .pub-roster__tier {
-    grid-template-columns: 1fr;
-    gap: 1.1rem;
-  }
-}
-.pub-roster__label {
-  font-family: var(--font-ui);
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--ink-faint);
-  padding-top: 0.35rem;
-}
-.pub-roster__people {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
   gap: 0.75rem;
 }
 /* Each person in their own box. The rank sits on the box's top edge as

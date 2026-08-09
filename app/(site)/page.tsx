@@ -33,47 +33,21 @@ const PILLARS = [
   }
 ];
 
-/* Tiers of responsibility, NOT a reporting tree.
-   The earlier version drew connector lines implying who reports to
-   whom — those lines were invented here, not supplied by the unit.
-   Listing tiers states what is actually known: the positions held, and
-   roughly at what level. */
-const ROSTER: { tier: string; people: { rank: string; name: string; role: string }[] }[] = [
-  {
-    tier: "Instructor staff",
-    people: [
-      {
-        rank: "SASI",
-        name: "Maj Lance Roberts",
-        role: "Senior Aerospace Science Instructor"
-      },
-      { rank: "ASI", name: "MSgt Jeffery George", role: "Aerospace Science Instructor" }
-    ]
-  },
-  {
-    tier: "Corps headquarters",
-    people: [
-      { rank: "C/Col", name: "Kevin Easton", role: "Corps Commander" },
-      { rank: "C/Lt Col", name: "Liam Triest", role: "Vice Corps Commander" },
-      { rank: "C/Maj", name: "Tifani Stevens", role: "Executive Officer" }
-    ]
-  },
-  {
-    tier: "Command staff",
-    people: [
-      { rank: "Superintendent", name: "Cook", role: "Corps Superintendent" },
-      { rank: "First Sergeant", name: "Messer", role: "Corps First Sergeant" },
-      { rank: "C/Maj", name: "Sowers", role: "Inspector General" },
-      { rank: "C/Capt", name: "Lehman", role: "Standardization & Evaluation" }
-    ]
-  },
-  {
-    tier: "Directorates",
-    people: [
-      { rank: "C/Maj", name: "Clayton Rice", role: "Director of Operations" },
-      { rank: "C/Maj", name: "Nathaniel Frost", role: "Director of Mission Support" }
-    ]
-  }
+/* One flat list, not a hierarchy.
+   Earlier versions drew a tree and then tiers, both of which asserted
+   reporting relationships that were never supplied. A single roster
+   states only what is known: who holds which position. Order is
+   seniority by convention, and carries no structural claim. */
+const ROSTER: { rank: string; name: string; role: string }[] = [
+  { rank: "SASI", name: "Maj Lance Roberts", role: "Senior Aerospace Science Instructor" },
+  { rank: "ASI", name: "MSgt Jeffery George", role: "Aerospace Science Instructor" },
+  { rank: "C/Col", name: "Kevin Easton", role: "Corps Commander" },
+  { rank: "C/Lt Col", name: "Liam Triest", role: "Vice Corps Commander" },
+  { rank: "C/Maj", name: "Tifani Stevens", role: "Executive Officer" },
+  { rank: "Superintendent", name: "Cook", role: "Corps Superintendent" },
+  { rank: "C/Maj", name: "Sowers", role: "Inspector General" },
+  { rank: "C/Maj", name: "Clayton Rice", role: "Director of Operations" },
+  { rank: "C/Maj", name: "Nathaniel Frost", role: "Director of Mission Support" }
 ];
 
 export default async function HomePage() {
@@ -188,18 +162,11 @@ export default async function HomePage() {
           </div>
 
           <div className="pub-roster">
-            {ROSTER.map((tier) => (
-              <div className="pub-roster__tier" key={tier.tier}>
-                <h3 className="pub-roster__label">{tier.tier}</h3>
-                <div className="pub-roster__people">
-                  {tier.people.map((p) => (
-                    <div className="pub-person" key={p.name + p.role}>
-                      <p className="pub-person__rank">{p.rank}</p>
-                      <p className="pub-person__name">{p.name}</p>
-                      <p className="pub-person__role">{p.role}</p>
-                    </div>
-                  ))}
-                </div>
+            {ROSTER.map((p) => (
+              <div className="pub-person" key={p.name + p.role}>
+                <p className="pub-person__rank">{p.rank}</p>
+                <p className="pub-person__name">{p.name}</p>
+                <p className="pub-person__role">{p.role}</p>
               </div>
             ))}
           </div>
