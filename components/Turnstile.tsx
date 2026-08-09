@@ -31,7 +31,25 @@ const SCRIPT_SRC =
  * development works without Cloudflare keys. `lib/turnstile.ts` makes the
  * matching decision on the server.
  */
-export default function Turnstile({ action }: { action?: string }) {
+export default function Turnstile({
+  action,
+  /**
+   * `"interaction-only"` hides the widget unless Cloudflare actually
+   * needs to challenge the visitor — the box simply never appears for
+   * the overwhelming majority of real people, while verification still
+   * runs. Use it where a visible checkbox would be friction.
+   *
+   * NOTE: this controls the CLIENT side only. For a fully invisible
+   * experience the widget itself should also be created as
+   * "Invisible" (or at least "Managed") in the Cloudflare dashboard —
+   * Turnstile -> your widget -> Widget Mode. A "Managed" widget in
+   * interaction-only mode still flashes briefly for some visitors.
+   */
+  appearance = "always"
+}: {
+  action?: string;
+  appearance?: "always" | "execute" | "interaction-only";
+}) {
   const containerRef = useRef<HTMLDivElement>(null);
   const widgetIdRef = useRef<string | null>(null);
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
@@ -50,6 +68,7 @@ export default function Turnstile({ action }: { action?: string }) {
         sitekey: siteKey,
         action,
         theme: "dark",
+        appearance,
         // Keeps the widget legible next to the auth card's own copy.
         size: "flexible",
         "response-field-name": "cf-turnstile-response",
@@ -86,7 +105,7 @@ export default function Turnstile({ action }: { action?: string }) {
         widgetIdRef.current = null;
       }
     };
-  }, [siteKey, action]);
+  }, [siteKey, action, appearance]);
 
   if (!siteKey) return null;
 

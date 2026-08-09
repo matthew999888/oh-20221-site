@@ -26,10 +26,12 @@ import { useEffect, useRef, useState } from "react";
          -movflags +faststart public/media/hero.mp4
 ===================================================================== */
 
-const SOURCES = [
-  { src: "/media/hero.webm", type: "video/webm" },
-  { src: "/media/hero.mp4", type: "video/mp4" }
-];
+/* MP4 only, deliberately. A VP9/WebM encode of this footage came out
+   larger than the H.264 (12.9 MB vs 5.1 MB), and because <source> is
+   evaluated in order, offering it first would make VP9-capable browsers
+   download the heavier file. Re-add a WebM only if it actually beats
+   the MP4 on size. */
+const SOURCES = [{ src: "/media/hero.mp4", type: "video/mp4" }];
 const POSTER = "/media/hero-poster.jpg";
 
 export default function HeroVideo() {

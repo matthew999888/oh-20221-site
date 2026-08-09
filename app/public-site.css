@@ -627,143 +627,85 @@ a.pub-card:hover {
   font-size: 0.95rem;
 }
 
-/* ── Chain of command — org tree ───────────────────────────────────
-   Built from nested <ul>/<li> so it is a real hierarchy to a screen
-   reader, with the connectors drawn as ::before/::after pseudo-elements
-   rather than as extra markup. Collapses to an indented list under
-   900px, where a wide tree cannot fit without horizontal scrolling. */
-.pub-tree {
-  --tree-gap: 2.25rem; /* vertical distance between tiers  */
-  --tree-line: var(--line-strong);
-  overflow-x: auto;
-  padding: 1rem 0 0.5rem;
+/* ── Command staff roster ──────────────────────────────────────────
+   Not a tree. The unit's actual reporting lines below the Corps
+   Commander were never specified, and a tree diagram asserts them —
+   so this presents tiers of responsibility without claiming who
+   reports to whom. Each tier is a labelled band separated by a rule. */
+.pub-roster {
+  border-top: 1px solid var(--line);
 }
-.pub-tree ul {
-  display: flex;
-  justify-content: center;
-  gap: 1.25rem;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  position: relative;
+.pub-roster__tier {
+  display: grid;
+  grid-template-columns: minmax(0, 13rem) minmax(0, 1fr);
+  gap: clamp(1rem, 4vw, 4rem);
+  padding-block: 2rem;
+  border-bottom: 1px solid var(--line);
 }
-/* Every tier below the root gets a stub rising to the parent's rail. */
-.pub-tree ul ul {
-  margin-top: var(--tree-gap);
+@media (max-width: 780px) {
+  .pub-roster__tier {
+    grid-template-columns: 1fr;
+    gap: 1.1rem;
+  }
 }
-.pub-tree li {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: var(--tree-gap);
-}
-/* Vertical stub from the horizontal rail down into this node. */
-.pub-tree li::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 50%;
-  width: 1px;
-  height: var(--tree-gap);
-  background: var(--tree-line);
-}
-/* Horizontal rail spanning a row of siblings. Trimmed at the ends so
-   it stops at the outermost children rather than floating past them. */
-.pub-tree li::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: var(--tree-line);
-}
-.pub-tree li:first-child::after {
-  left: 50%;
-}
-.pub-tree li:last-child::after {
-  right: 50%;
-}
-/* A lone child needs no rail, only the stub. */
-.pub-tree li:only-child::after {
-  display: none;
-}
-/* The root sits above all connectors. */
-.pub-tree > ul > li {
-  padding-top: 0;
-}
-.pub-tree > ul > li::before,
-.pub-tree > ul > li::after {
-  display: none;
-}
-
-.pub-node {
-  min-width: 12.5rem;
-  max-width: 15rem;
-  padding: 0.9rem 1.1rem;
-  border: 1px solid var(--line-strong);
-  border-radius: var(--radius-sm);
-  background: var(--surface-1);
-  text-align: center;
-}
-/* Instructor staff and the corps commander read as the spine. */
-.pub-node--command {
-  border-color: var(--accent);
-  background: var(--surface-2);
-}
-.pub-node__rank {
+.pub-roster__label {
   font-family: var(--font-ui);
-  font-size: 0.66rem;
+  font-size: 0.7rem;
   font-weight: 600;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  padding-top: 0.35rem;
+}
+.pub-roster__people {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  gap: 1.75rem 2.5rem;
+}
+.pub-person__rank {
+  font-family: var(--font-ui);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.13em;
   text-transform: uppercase;
   color: var(--accent);
 }
-.pub-node__name {
+.pub-person__name {
   margin-top: 0.35rem;
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: 1.02rem;
-  letter-spacing: -0.015em;
+  font-size: 1.14rem;
+  letter-spacing: -0.02em;
   color: var(--ink-strong);
 }
-.pub-node__role {
+.pub-person__role {
   margin-top: 0.15rem;
-  font-size: 0.78rem;
-  line-height: 1.45;
+  font-size: 0.84rem;
+  line-height: 1.5;
   color: var(--ink-muted);
 }
 
-/* Under 900px a horizontal tree cannot fit. Become an indented list
-   with a single left rail — still obviously a hierarchy. */
-@media (max-width: 900px) {
-  .pub-tree {
-    overflow-x: visible;
-  }
-  .pub-tree ul {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0.75rem;
-  }
-  .pub-tree ul ul {
-    margin-top: 0.75rem;
-    margin-left: 1.25rem;
-    padding-left: 1.25rem;
-    border-left: 1px solid var(--tree-line);
-  }
-  .pub-tree li {
-    align-items: stretch;
-    padding-top: 0;
-  }
-  .pub-tree li::before,
-  .pub-tree li::after {
-    display: none;
-  }
-  .pub-node {
-    max-width: none;
-    text-align: left;
-  }
+/* ── Full-bleed photo band ─────────────────────────────────────────
+   For the corps group photo: edge-to-edge, capped so it never
+   dominates a tall screen. */
+.pub-band {
+  position: relative;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background: var(--surface-1);
+}
+.pub-band__img {
+  display: block;
+  width: 100%;
+  max-height: 78vh;
+  object-fit: cover;
+  object-position: center;
+}
+.pub-band__caption {
+  padding: 1rem clamp(1.25rem, 5vw, 4rem) 1.25rem;
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+  color: var(--ink-faint);
 }
 
 /* ── Mission statement ─────────────────────────────────────────────── */
@@ -908,6 +850,13 @@ a.pub-card:hover {
   flex-direction: column;
   gap: 1.25rem;
   max-width: 34rem;
+}
+/* .pub-field carries `flex: 1 1 15rem` for the horizontal filter bars.
+   Inside this COLUMN flex container that basis applies to height, so
+   every field tried to be 15rem tall and then stretched. Reset it —
+   fields here size to their content. */
+.pub-form .pub-field {
+  flex: 0 0 auto;
 }
 .pub-form__row {
   display: grid;
@@ -1392,13 +1341,19 @@ a.pub-card:hover {
 }
 
 /* ── Turnstile slot ────────────────────────────────────────────────── */
+/* Reserves height so the layout does not jump when the widget loads.
+   In interaction-only mode Cloudflare renders a zero-height container
+   for most visitors, so `:has(> :not(:empty))` would still hold space —
+   instead the height is only reserved once the iframe actually has a
+   rendered size. */
 .pub-turnstile {
   display: flex;
   justify-content: center;
-  min-height: 65px;
-  margin-block: 1rem;
+  margin-block: 0;
+}
+.pub-turnstile:has(iframe) {
+  margin-block: 0.5rem;
 }
 .pub-turnstile:empty {
-  min-height: 0;
-  margin-block: 0;
+  display: none;
 }

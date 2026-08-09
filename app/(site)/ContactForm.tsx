@@ -107,7 +107,7 @@ export default function ContactForm() {
         <input id="website" name="website" type="text" tabIndex={-1} autoComplete="off" />
       </div>
 
-      <Turnstile action="contact" />
+      <Turnstile action="contact" appearance="interaction-only" />
 
       {!state.ok && state.message && (
         <p className="pub-form__error" role="alert">

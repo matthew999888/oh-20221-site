@@ -1,17 +1,37 @@
-# Hero video — drop your files here
+# Homepage media
 
-The home page hero expects these three files. **No code changes are
-needed** — add the files and the hero picks them up. Until then the hero
-falls back to a purple/navy gradient, so the page still looks finished.
+Current contents, all committed:
 
-| File | Required | What it is |
+| File | Size | What it is |
 |---|---|---|
-| `hero.mp4` | **Yes** | H.264 / AAC, 16:9. The main source. |
-| `hero.webm` | Recommended | VP9, 16:9. Smaller; served to browsers that support it. |
-| `hero-poster.jpg` | Recommended | 16:9 still frame. Shown while the video loads, and instead of it when the visitor has "reduce motion" enabled. |
+| `hero.mp4` | 5.1 MB | Looping hero background. 1440px wide, 30.5s, no audio. |
+| `hero-poster.jpg` | 0.12 MB | First-frame still. Shown while the video loads, and *instead* of it when the visitor has "reduce motion" enabled. |
+| `all-cadets.jpg` | 0.37 MB | Corps group photo, full-bleed band on the homepage. |
 
-Filenames are case-sensitive on the server. Put them directly in this
-folder: `public/media/hero.mp4`.
+## Replacing the hero video
+
+Overwrite `hero.mp4` and `hero-poster.jpg` — no code change needed. The
+paths live in `SOURCES`/`POSTER` at the top of
+`app/(site)/HeroVideo.tsx`.
+
+The current file was transcoded from a 442 MB APV master
+(`Downloads/website.mp4`) with:
+
+```bash
+ffmpeg -i website.mp4 -an -c:v libx264 -crf 34 -preset slow \
+  -pix_fmt yuv420p -vf "scale=1440:-2" -movflags +faststart hero.mp4
+
+ffmpeg -ss 3 -i website.mp4 -frames:v 1 -q:v 4 \
+  -vf "scale=1600:-2" hero-poster.jpg
+```
+
+**There is deliberately no WebM.** A VP9 encode of this footage came out
+at 12.9 MB against the H.264's 5.1 MB. Because `<source>` elements are
+tried in order, offering it first would make VP9-capable browsers
+download the *heavier* file. Only add one back if it actually beats the
+MP4 on size.
+
+Filenames are case-sensitive on the server.
 
 ## Making a good background loop
 

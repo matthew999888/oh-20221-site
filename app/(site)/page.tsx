@@ -33,96 +33,48 @@ const PILLARS = [
   }
 ];
 
-/* The command tree. Kept in code rather than the database because it is
-   a structural diagram — reordering it is a layout decision, not a
-   content edit. Names change once a year at appointment. */
-const TREE = {
-  rank: "Instructor Staff",
-  name: "Maj Lance Roberts",
-  role: "Senior Aerospace Science Instructor",
-  command: true,
-  children: [
-    {
-      rank: "ASI",
-      name: "MSgt Jeffery George",
-      role: "Aerospace Science Instructor",
-      command: true,
-      children: [
-        {
-          rank: "C/Col",
-          name: "Kevin Easton",
-          role: "Corps Commander",
-          command: true,
-          children: [
-            {
-              rank: "C/Lt Col",
-              name: "Liam Triest",
-              role: "Vice Corps Commander",
-              children: [
-                {
-                  rank: "C/Maj",
-                  name: "Clayton Rice",
-                  role: "Director of Operations"
-                },
-                {
-                  rank: "C/Maj",
-                  name: "Nathaniel Frost",
-                  role: "Director of Mission Support"
-                }
-              ]
-            },
-            {
-              rank: "C/Maj",
-              name: "Tifani Stevens",
-              role: "Executive Officer",
-              children: [
-                {
-                  rank: "Command Staff",
-                  name: "Cook & Messer",
-                  role: "Superintendent · First Sergeant"
-                },
-                {
-                  rank: "IG & Stan Eval",
-                  name: "Sowers & Lehman",
-                  role: "C/Major · C/Captain"
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    }
-  ]
-};
-
-type TreeNode = {
-  rank: string;
-  name: string;
-  role: string;
-  command?: boolean;
-  children?: TreeNode[];
-};
-
-/* Rendered as nested lists so the hierarchy is real to assistive tech;
-   the connector lines are drawn entirely in CSS. */
-function TreeBranch({ node }: { node: TreeNode }) {
-  return (
-    <li>
-      <div className={`pub-node ${node.command ? "pub-node--command" : ""}`}>
-        <p className="pub-node__rank">{node.rank}</p>
-        <p className="pub-node__name">{node.name}</p>
-        <p className="pub-node__role">{node.role}</p>
-      </div>
-      {node.children && node.children.length > 0 && (
-        <ul>
-          {node.children.map((child) => (
-            <TreeBranch node={child} key={child.name} />
-          ))}
-        </ul>
-      )}
-    </li>
-  );
-}
+/* Tiers of responsibility, NOT a reporting tree.
+   The earlier version drew connector lines implying who reports to
+   whom — those lines were invented here, not supplied by the unit.
+   Listing tiers states what is actually known: the positions held, and
+   roughly at what level. */
+const ROSTER: { tier: string; people: { rank: string; name: string; role: string }[] }[] = [
+  {
+    tier: "Instructor staff",
+    people: [
+      {
+        rank: "SASI",
+        name: "Maj Lance Roberts",
+        role: "Senior Aerospace Science Instructor"
+      },
+      { rank: "ASI", name: "MSgt Jeffery George", role: "Aerospace Science Instructor" }
+    ]
+  },
+  {
+    tier: "Corps headquarters",
+    people: [
+      { rank: "C/Col", name: "Kevin Easton", role: "Corps Commander" },
+      { rank: "C/Lt Col", name: "Liam Triest", role: "Vice Corps Commander" },
+      { rank: "C/Maj", name: "Tifani Stevens", role: "Executive Officer" }
+    ]
+  },
+  {
+    tier: "Command staff",
+    people: [
+      { rank: "Superintendent", name: "Cook", role: "Corps Superintendent" },
+      { rank: "First Sergeant", name: "Messer", role: "Corps First Sergeant" },
+      { rank: "C/Maj", name: "Sowers", role: "Inspector General" },
+      { rank: "C/Capt", name: "Lehman", role: "Standardization & Evaluation" }
+    ]
+  },
+  {
+    tier: "Directorates",
+    people: [
+      { rank: "C/Maj", name: "Clayton Rice", role: "Director of Operations" },
+      { rank: "C/Maj", name: "Nathaniel Frost", role: "Director of Mission Support" }
+    ]
+  }
+];
 
 export default async function HomePage() {
   const [instructors, images, faqs] = await Promise.all([
@@ -226,7 +178,7 @@ export default async function HomePage() {
             </p>
             <div>
               <h2 className="pub-h2" id="chain-heading">
-                Chain of command.
+                Command staff.
               </h2>
               <p className="pub-lede">
                 Cadet positions are appointed annually on merit, performance, and leadership
@@ -235,12 +187,42 @@ export default async function HomePage() {
             </div>
           </div>
 
-          <nav className="pub-tree" aria-label="Chain of command">
-            <ul>
-              <TreeBranch node={TREE} />
-            </ul>
-          </nav>
+          <div className="pub-roster">
+            {ROSTER.map((tier) => (
+              <div className="pub-roster__tier" key={tier.tier}>
+                <h3 className="pub-roster__label">{tier.tier}</h3>
+                <div className="pub-roster__people">
+                  {tier.people.map((p) => (
+                    <div key={p.name + p.role}>
+                      <p className="pub-person__rank">{p.rank}</p>
+                      <p className="pub-person__name">{p.name}</p>
+                      <p className="pub-person__role">{p.role}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
+      </section>
+
+      {/* ── Corps photo ─────────────────────────────────────────────── */}
+      <section className="pub-band" aria-labelledby="corps-photo-heading">
+        <h2 className="sr-only" id="corps-photo-heading">
+          The corps
+        </h2>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          className="pub-band__img"
+          src="/media/all-cadets.jpg"
+          alt="The cadets of OH-20221 AFJROTC assembled in uniform for a unit photograph."
+          width={1800}
+          height={1013}
+          loading="lazy"
+        />
+        <p className="pub-band__caption">
+          The cadets of OH-20221 &middot; {UNIT.school}
+        </p>
       </section>
 
       {/* ── Instructors ─────────────────────────────────────────────── */}
